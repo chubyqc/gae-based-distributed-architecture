@@ -1,8 +1,6 @@
 package chubyqc.gaeDistributed.client.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 
 import chubyqc.gaeDistributed.client.messages.incoming.ClientMessageFactory;
@@ -32,7 +30,8 @@ public class ComManager {
 							@Override
 							public void handle(HttpExchange content) throws IOException {
 								System.out.println("Incoming request");
-								ClientMessageFactory.getInstance().create(getBody(content)).execute();
+								ClientMessageFactory.getInstance().create(
+										content.getRequestBody()).execute();
 							}
 						});
 						server.start();
@@ -44,15 +43,5 @@ public class ComManager {
 			}
 			
 		}).start();
-	}
-	
-	private String getBody(HttpExchange content) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(content.getRequestBody()));
-		StringBuilder body = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			body.append(line);
-		}
-		return body.toString(); 
 	}
 }

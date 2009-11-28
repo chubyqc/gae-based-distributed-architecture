@@ -1,7 +1,5 @@
 package chubyqc.gaeDistributed.client.messages.incoming;
 
-import org.json.JSONObject;
-
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 
 public class ClientMessageFactory extends MessageFactory {
@@ -11,19 +9,8 @@ public class ClientMessageFactory extends MessageFactory {
 	}
 
 	private ClientMessageFactory() {
-		super(new IMessageCreator<?>[] {
-				new LaunchTorrentCreator()
+		super(new MessageCreator[] {
+				new MessageCreator(LaunchTorrent.class)
 		});
-	}
-
-	
-	private static class LaunchTorrentCreator extends IMessageCreator<LaunchTorrent> {
-
-		public LaunchTorrent create(JSONObject json) {
-			LaunchTorrent message = new LaunchTorrent();
-			message.initJSON(json);
-			return message;
-		}
-		
 	}
 }
