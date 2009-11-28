@@ -1,0 +1,6 @@
+chubyqc.gaeDistributed.server.client.ClientException, true
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true
+java.lang.Exception, false
+java.lang.RuntimeException, false
+java.lang.String, true
+java.lang.Throwable, false

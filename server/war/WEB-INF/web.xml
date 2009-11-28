@@ -7,18 +7,28 @@
   
   <!-- Servlets -->
   <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>chubyqc.gaeDistributed.server.server.GreetingServiceImpl</servlet-class>
+    <servlet-name>daftiServiceServlet</servlet-name>
+    <servlet-class>chubyqc.gaeDistributed.server.server.DaftiServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>daftiIncomingServlet</servlet-name>
+  	<servlet-class>chubyqc.gaeDistributed.server.network.ComManagerServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/gae_based_distributed_architecture_server/greet</url-pattern>
+    <servlet-name>daftiServiceServlet</servlet-name>
+    <url-pattern>/dafti/service</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>daftiIncomingServlet</servlet-name>
+  	<url-pattern>/dafti/incoming</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>Gae_based_distributed_architecture_server.html</welcome-file>
+    <welcome-file>dafti.html</welcome-file>
   </welcome-file-list>
 
 </web-app>
