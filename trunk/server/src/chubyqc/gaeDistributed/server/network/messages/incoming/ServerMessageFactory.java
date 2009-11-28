@@ -7,6 +7,8 @@ public class ServerMessageFactory extends MessageFactory {
 	}
 	
 	public ServerMessageFactory() {
-		super(new IMessageCreator<?>[0]);
+		super(new MessageCreator[] {
+				new MessageCreator(SendEmail.class)
+		});
 	}
 }

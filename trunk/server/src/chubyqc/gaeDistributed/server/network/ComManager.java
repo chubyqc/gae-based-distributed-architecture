@@ -1,23 +1,41 @@
 package chubyqc.gaeDistributed.server.network;
 
-public class ComManager {
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
+import chubyqc.gaeDistributed.server.Logger;
+import chubyqc.gaeDistributed.server.network.messages.incoming.ServerMessageFactory;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
+
+public class ComManager {	
 	private static ComManager _instance = new ComManager();
 	public static ComManager getInstance() {
 		return _instance;
 	}
+
+	private static final long serialVersionUID = 1L;
+	public static final String URL_INCOMING = "dafti/incoming";
+	public static final String URL_BASE = "http://localhost:8080/";
 	
-	private ComManager() {
+	void receive(InputStream input) {
+		try {
+			ServerMessageFactory.getInstance().create(input).execute();
+		} catch (IOException e) {
+			Logger.getInstance().error(e);
+		}
 	}
-	
-	public void alertClient(String message) {
-//		try {
-//			URLConnection connection = new URL("").openConnection();
-//			connection.setDoOutput(true);
-//			connection.getOutputStream().write(new LaunchTorrent(message).toString().getBytes());
-//			connection.getOutputStream().flush();
-//			connection.getInputStream().read();
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
+
+	public void send(String address, OutgoingMessage message) {
+		try {
+			URLConnection connection = new URL(URL_BASE + address).openConnection();
+			connection.setDoOutput(true);
+			connection.getOutputStream().write(message.toString().getBytes());
+			connection.getOutputStream().flush();
+			connection.getInputStream().read();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

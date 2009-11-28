@@ -1,26 +1,30 @@
 package chubyqc.gaeDistributed.server.network.messages.incoming;
 
-import java.lang.reflect.ParameterizedType;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import chubyqc.gaeDistributed.server.Logger;
 import chubyqc.gaeDistributed.server.network.messages.Message;
 
 public abstract class MessageFactory {
 	
-	private Map<String, IMessageCreator<? extends IncomingMessage>> _creators;
+	private Map<String, MessageCreator> _creators;
 	
-	protected MessageFactory(IMessageCreator<? extends IncomingMessage>[] creators) {
-		_creators = new HashMap<String, IMessageCreator<?>>();
+	protected MessageFactory(MessageCreator[] creators) {
+		_creators = new HashMap<String, MessageCreator>();
 		
 		addCreators(creators);
 	}
 	
-	private void addCreators(IMessageCreator<? extends Message>[] creators) {
-		for (IMessageCreator<? extends Message> creator : creators) {
+	private void addCreators(MessageCreator[] creators) {
+		for (MessageCreator creator : creators) {
 			addCreator(creator);
 		}
 	}
@@ -34,15 +38,41 @@ public abstract class MessageFactory {
 		}
 	}
 	
-	private void addCreator(IMessageCreator<? extends IncomingMessage> creator) {
+	public IncomingMessage create(InputStream jsonAsStream) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(jsonAsStream));
+		StringBuilder body = new StringBuilder();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			body.append(line);
+		}
+		return create(body.toString()); 
+	}
+	
+	private void addCreator(MessageCreator creator) {
 		_creators.put(creator.getId(), creator);
 	}
 
-	protected static abstract class IMessageCreator<T extends IncomingMessage> {
-		protected abstract T create(JSONObject json);
+	protected static class MessageCreator {
+		
+		private Class<? extends IncomingMessage> _messageType;
+		
+		public MessageCreator(Class<? extends IncomingMessage> messageType) {
+			_messageType = messageType;
+		}
+		
+		private IncomingMessage create(JSONObject json) {
+			try {
+				IncomingMessage message = _messageType.newInstance();
+				message.initJSON(json);
+				return message;
+			} catch (Exception e) {
+				Logger.getInstance().fatal(e);
+			}
+			return null;
+		}
 		
 		protected String getId() {
-			return ((Class<?>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
+			return _messageType.getSimpleName();
 		}
 	}
 }
