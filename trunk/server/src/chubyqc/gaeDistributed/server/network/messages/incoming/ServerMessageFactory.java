@@ -8,7 +8,8 @@ public class ServerMessageFactory extends MessageFactory {
 	
 	public ServerMessageFactory() {
 		super(new MessageCreator[] {
-				new MessageCreator(SendEmail.class)
+				new MessageCreator(SendEmail.class),
+				new MessageCreator(ClientBooted.class)
 		});
 	}
 }
