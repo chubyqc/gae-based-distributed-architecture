@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.client.messages.incoming;
+package chubyqc.gaeDistributed.client.network.messages.incoming;
 
 import java.io.IOException;
 
