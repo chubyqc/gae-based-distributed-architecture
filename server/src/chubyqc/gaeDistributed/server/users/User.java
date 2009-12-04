@@ -16,6 +16,9 @@ public class User {
 	private static final String ERR_PASSWORD = "Invalid password";
 	private static final String ERR_USER_EXISTS = "User already exists";
 	
+	public static final String URL_INCOMING = "dafti/incoming";
+	public static final String URL_BASE = "http://localhost:8080/";
+	
 	@Persistent
     @PrimaryKey
 	private String _name;
@@ -60,6 +63,6 @@ public class User {
 	
 	private void sendConfirmationEmail() {
 		ComManager.getInstance().send(
-				ComManager.URL_INCOMING, new SendEmail(_name, _email));
+				URL_BASE + URL_INCOMING, new SendEmail(_name, _email));
 	}
 }
