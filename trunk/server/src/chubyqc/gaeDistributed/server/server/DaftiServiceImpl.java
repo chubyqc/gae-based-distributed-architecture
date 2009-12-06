@@ -2,6 +2,8 @@ package chubyqc.gaeDistributed.server.server;
 
 import chubyqc.gaeDistributed.server.client.ClientException;
 import chubyqc.gaeDistributed.server.client.DaftiService;
+import chubyqc.gaeDistributed.server.network.ComManager;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.IsClientBooted;
 import chubyqc.gaeDistributed.server.users.Manager;
 import chubyqc.gaeDistributed.server.users.User;
 
@@ -22,5 +24,10 @@ public class DaftiServiceImpl extends RemoteServiceServlet implements
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
+	}
+
+	@Override
+	public void isBooted(String clientAddress) {
+		ComManager.getInstance().send(clientAddress, new IsClientBooted());
 	}
 }

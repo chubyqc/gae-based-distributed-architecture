@@ -6,10 +6,9 @@ public class ServerMessageFactory extends MessageFactory {
 		return _instance;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ServerMessageFactory() {
-		super(new MessageCreator[] {
-				new MessageCreator(SendEmail.class),
-				new MessageCreator(ClientBooted.class)
-		});
+		super(SendEmail.class, 
+				ClientBooted.class);
 	}
 }
