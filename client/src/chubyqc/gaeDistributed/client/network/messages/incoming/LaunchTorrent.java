@@ -2,16 +2,16 @@ package chubyqc.gaeDistributed.client.network.messages.incoming;
 
 import java.io.IOException;
 
-import chubyqc.gaeDistributed.server.network.messages.Keys;
 import chubyqc.gaeDistributed.server.network.messages.incoming.IncomingMessage;
+import chubyqc.gaeDistributed.server.network.messages.specs.ILaunchTorrent;
 
-public class LaunchTorrent extends IncomingMessage {
+public class LaunchTorrent extends IncomingMessage<ILaunchTorrent> {
 
 	private static final String COMMAND_TRANSMISSION = "transmission";
 	private static final String COMMAND_LAUNCH = "transmission-remote -a %s";
 	
 	public void execute() {
-		String url = getUrl();
+		String url = getDataStore().getURL();
 		System.out.println(url);
 		try {
 			Runtime.getRuntime().exec(COMMAND_TRANSMISSION);
@@ -20,9 +20,5 @@ public class LaunchTorrent extends IncomingMessage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private String getUrl() {
-		return getAttribute(Keys.LAUNCHTORRENT_URL);
 	}
 }

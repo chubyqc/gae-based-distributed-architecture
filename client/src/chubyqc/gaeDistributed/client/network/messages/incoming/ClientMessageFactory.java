@@ -8,9 +8,10 @@ public class ClientMessageFactory extends MessageFactory {
 		return _instance;
 	}
 
+	@SuppressWarnings("unchecked")
 	private ClientMessageFactory() {
-		super(new MessageCreator[] {
-				new MessageCreator(LaunchTorrent.class)
-		});
+		super(LaunchTorrent.class,
+				IsClientBooted.class
+		);
 	}
 }

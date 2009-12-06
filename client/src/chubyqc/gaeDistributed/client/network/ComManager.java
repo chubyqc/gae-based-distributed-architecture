@@ -19,6 +19,7 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 	}
 	
 	private static final String SERVER_ADDRESS = "http://localhost:8181/dafti/incoming";
+	private static final String RESPONSE_SUCCESS = "200 OK";
 	
 	private ComManager(MessageFactory factory) {
 		super(factory);
@@ -40,6 +41,8 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 							@Override
 							public void handle(HttpExchange content) throws IOException {
 								receive(content.getRequestBody());
+								content.sendResponseHeaders(200, -1);
+								content.close();
 							}
 						});
 						server.start();
