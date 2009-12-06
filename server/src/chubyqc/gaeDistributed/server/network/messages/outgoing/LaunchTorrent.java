@@ -1,10 +1,16 @@
 package chubyqc.gaeDistributed.server.network.messages.outgoing;
 
-import chubyqc.gaeDistributed.server.network.messages.Keys;
+import chubyqc.gaeDistributed.server.network.messages.specs.ILaunchTorrent;
 
 public class LaunchTorrent extends OutgoingMessage {
 	
-	public LaunchTorrent(String url) {
-		setAttribute(Keys.LAUNCHTORRENT_URL, url);
+	public LaunchTorrent(final String url) {
+		super(new ILaunchTorrent() {
+			
+			@Override
+			public String getURL() {
+				return url;
+			}
+		});
 	}
 }

@@ -5,11 +5,12 @@ import org.json.JSONObject;
 
 public abstract class Message {
 	
+	protected static final String PREFIX_GET = "get";
 	public static final String KEY_METHOD = "method";
 
 	private JSONObject _json;
 	
-	public void initJSON() {
+	protected void initJSON() {
 		_json = new JSONObject();
 		try {
 			_json.put(KEY_METHOD, getClass().getSimpleName());

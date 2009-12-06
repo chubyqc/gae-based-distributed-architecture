@@ -37,8 +37,8 @@ public class ComManager {
 			URLConnection connection = new URL(address).openConnection();
 			connection.setDoOutput(true);
 			connection.getOutputStream().write(message.toString().getBytes());
-			connection.getOutputStream().flush();
-			connection.getInputStream().read();
+			connection.getOutputStream().close();
+			connection.getInputStream().close();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

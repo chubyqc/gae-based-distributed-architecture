@@ -1,6 +1,8 @@
 package chubyqc.gaeDistributed.server.network.messages.incoming;
 
-public class ClientBooted extends IncomingMessage {
+import chubyqc.gaeDistributed.server.network.messages.specs.IClientBooted;
+
+public class ClientBooted extends IncomingMessage<IClientBooted> {
 
 	@Override
 	public void execute() {
