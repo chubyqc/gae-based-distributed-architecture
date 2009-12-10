@@ -1,0 +1,14 @@
+{
+  commands: [{
+    name: "Launch Transmission",
+    exec: "transmission",
+    parameters: []
+  }, {
+    name: "Launch torrent",
+    exec: "transmission-remote",
+    parameters: [{
+      name: "-a",
+      value: "specify url"
+    }]
+  }]
+}
