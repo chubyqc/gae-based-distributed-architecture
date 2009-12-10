@@ -3,6 +3,10 @@ package chubyqc.gaeDistributed.server.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import chubyqc.gaeDistributed.server.client.commands.Command;
+import chubyqc.gaeDistributed.server.client.commands.Commands;
+import chubyqc.gaeDistributed.server.client.commands.ICommandsWriter;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,6 +29,7 @@ public class Dafti implements EntryPoint {
     private static final String UI_CREATE_BUTTON = "Create";
     private static final String UI_SUCCESS = "Call was successful.";
     private static final String UI_ISBOOTED_BUTTON = "Is booted?";
+    private static final String UI_COMMANDS_BUTTON = "Get commands";
 
     private TextBox _nameTextBox;
     private TextBox _emailTextBox;
@@ -32,6 +37,8 @@ public class Dafti implements EntryPoint {
     private Label _messageLabel;
 
     private TextBox _clientAddress;
+    
+    private Grid _commandsGrid;
     
     private DaftiServiceAsync _service = GWT.create(DaftiService.class);
 
@@ -42,7 +49,18 @@ public class Dafti implements EntryPoint {
         
         addRegisterPanel();
         addIsBootedPanel();
+        addCommandsPanel();
     }
+	
+	private void addCommandsPanel() {
+		Button getCommands = new Button(UI_COMMANDS_BUTTON);
+		RootPanel.get().add(getCommands);
+		
+		_commandsGrid = new Grid(0, 1);
+		RootPanel.get().add(_commandsGrid);
+		
+		ClickHandler.create(getCommands, GetCommandsHandler.class, this, _service);
+	}
 	
 	private void addIsBootedPanel() {
 		Button isBootedButton = new Button(UI_ISBOOTED_BUTTON);
@@ -86,7 +104,8 @@ public class Dafti implements EntryPoint {
 		
 		private static Map<Class<?>, ClickHandlerCreator> _creators = create(new ClickHandlerCreator[] {
 				CreateHandler.creator(),
-				IsBootedHandler.creator()
+				IsBootedHandler.creator(),
+				GetCommandsHandler.creator()
 		});
 		private static Map<Class<?>, ClickHandlerCreator> create(ClickHandlerCreator[] creators) {
 			Map<Class<?>, ClickHandlerCreator> map = new HashMap<Class<?>, ClickHandlerCreator>();
@@ -110,6 +129,41 @@ public class Dafti implements EntryPoint {
 				throw new RuntimeException();
 			}
         }
+	}
+	
+	private static class GetCommandsHandler extends ClickHandler implements ICommandsWriter {
+		
+		public void onClick(ClickEvent event) {
+			_service.getCommands(_ui._nameTextBox.getText(), new AsyncCallback<Commands>() {
+				@Override
+				public void onSuccess(Commands result) {
+					result.printCommands(GetCommandsHandler.this);
+				}
+				@Override
+				public void onFailure(Throwable caught) {}
+			});
+		}
+
+		@Override
+		public void print(Command command) {
+			int row = _ui._commandsGrid.insertRow(_ui._commandsGrid.getRowCount());
+			_ui._commandsGrid.setText(row, 0, command.getName());
+		}
+    	
+		public static ClickHandlerCreator creator() {
+			return new ClickHandlerCreator() {
+				
+				@Override
+				public ClickHandler create() {
+					return new GetCommandsHandler();
+				}
+
+				@Override
+				Class<?> getType() {
+					return GetCommandsHandler.class;
+				}
+			};
+		}
 	}
     
     private static class CreateHandler extends ClickHandler {

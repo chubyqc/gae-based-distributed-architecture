@@ -32,8 +32,10 @@ public class ComManager {
 		}
 	}
 
-	public void send(String address, OutgoingMessage message) {
+	public void send(String address, String username, OutgoingMessage message) {
 		try {
+			message.setUsername(username);
+			message.populateJSON();
 			URLConnection connection = new URL(address).openConnection();
 			connection.setDoOutput(true);
 			connection.getOutputStream().write(message.toString().getBytes());

@@ -2,7 +2,7 @@ package chubyqc.gaeDistributed.server.server;
 
 import chubyqc.gaeDistributed.server.client.ClientException;
 import chubyqc.gaeDistributed.server.client.DaftiService;
-import chubyqc.gaeDistributed.server.network.ComManager;
+import chubyqc.gaeDistributed.server.client.commands.Commands;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.IsClientBooted;
 import chubyqc.gaeDistributed.server.users.Manager;
 import chubyqc.gaeDistributed.server.users.User;
@@ -27,7 +27,12 @@ public class DaftiServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void isBooted(String clientAddress) {
-		ComManager.getInstance().send(clientAddress, new IsClientBooted());
+	public void isBooted(String username) {
+		Manager.getInstance().sendMessage(username, new IsClientBooted());
+	}
+
+	@Override
+	public Commands getCommands(String username) {
+		return Manager.getInstance().getCommands(username);
 	}
 }

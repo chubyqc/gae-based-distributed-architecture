@@ -1,6 +1,5 @@
 package chubyqc.gaeDistributed.server.network.messages;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class Message {
@@ -9,18 +8,24 @@ public abstract class Message {
 	public static final String KEY_METHOD = "method";
 
 	private JSONObject _json;
+	private String _username;
 	
-	protected void initJSON() {
-		_json = new JSONObject();
-		try {
-			_json.put(KEY_METHOD, getClass().getSimpleName());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	protected Message() {
 	}
 	
-	public void initJSON(JSONObject json) {
+	protected Message(JSONObject json) {
+		_json = json;
+	}
+	
+	public void setUsername(String username) {
+		_username = username;
+	}
+	
+	protected String getUsername() {
+		return _username;
+	}
+	
+	public void setJSON(JSONObject json) {
 		_json = json;
 	}
 	
