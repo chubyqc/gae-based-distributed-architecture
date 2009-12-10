@@ -3,7 +3,7 @@ package chubyqc.gaeDistributed.client.network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import chubyqc.gaeDistributed.client.network.messages.incoming.ClientMessageFactory;
+import chubyqc.gaeDistributed.client.commands.CommandsManager;
 import chubyqc.gaeDistributed.client.network.messages.outgoing.ClientBooted;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
@@ -13,20 +13,16 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager {
-	private static ComManager _instance = new ComManager(ClientMessageFactory.getInstance());
-	public static ComManager getInstance() {
-		return _instance;
-	}
 	
-	private static final String SERVER_ADDRESS = "http://localhost:8181/dafti/incoming";
-	private static final String RESPONSE_SUCCESS = "200 OK";
+	private String _serverAddress;
 	
-	private ComManager(MessageFactory factory) {
+	public ComManager(MessageFactory factory, String serverAddress) {
 		super(factory);
+		_serverAddress = serverAddress;
 	}
 	
-	public void send(OutgoingMessage message) {
-		send(SERVER_ADDRESS, message);
+	public void send(String username, OutgoingMessage message) {
+		send(_serverAddress, username, message);
 	}
 	
 	public void start() {
@@ -47,7 +43,8 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 						});
 						server.start();
 						System.out.println("Client started");
-						send(new ClientBooted());
+						send("myUsername", new ClientBooted());
+						CommandsManager.getInstance().announce();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
