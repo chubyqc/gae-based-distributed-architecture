@@ -17,7 +17,7 @@ public class SendEmail extends IncomingMessage<ISendEmail> {
 			EmailManager.getInstance().sendEmail(
 					getDataStore().getEmail(), MAIL_SUBJECT, 
 					String.format(MAIL_CONTENT, 
-							getDataStore().getName()));
+							getUsername()));
 		} catch (MessagingException e) {
 			Logger.getInstance().error(e);
 		}

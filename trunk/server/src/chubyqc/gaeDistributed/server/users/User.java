@@ -6,7 +6,9 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import chubyqc.gaeDistributed.server.EmailManager;
+import chubyqc.gaeDistributed.server.client.commands.Commands;
 import chubyqc.gaeDistributed.server.network.ComManager;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.SendEmail;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -27,10 +29,25 @@ public class User {
 	@Persistent
 	private String _email;
 	
+	private String _address;
+	private Commands _commands;
+	
 	User(String name, String password, String email) throws Exception {
 		_name = name;
 		setEmail(email);
 		setPassword(password);
+	}
+	
+	public void setAddress(String address) {
+		_address = address;
+	}
+	
+	public void setCommands(Commands commands) {
+		_commands = commands;
+	}
+	
+	public Commands getCommands() {
+		return _commands;
 	}
 	
 	private void setEmail(String email) throws Exception {
@@ -63,6 +80,10 @@ public class User {
 	
 	private void sendConfirmationEmail() {
 		ComManager.getInstance().send(
-				URL_BASE + URL_INCOMING, new SendEmail(_name, _email));
+				URL_BASE + URL_INCOMING, _name, new SendEmail(_email));
+	}
+	
+	public void send(OutgoingMessage message) {
+		ComManager.getInstance().send(_address, _name, message);
 	}
 }

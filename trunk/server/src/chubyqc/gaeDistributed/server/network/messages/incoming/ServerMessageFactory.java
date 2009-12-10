@@ -8,7 +8,9 @@ public class ServerMessageFactory extends MessageFactory {
 	
 	@SuppressWarnings("unchecked")
 	public ServerMessageFactory() {
-		super(SendEmail.class, 
-				ClientBooted.class);
+		super(
+				SendEmail.class, 
+				ClientBooted.class,
+				SendCommands.class);
 	}
 }

@@ -21,16 +21,17 @@ public abstract class IncomingMessage<T> extends Message {
 		return _dataStore;
 	}
 	
-	private String getAttribute(String key) {
+	private Object getAttribute(String key) {
 		try {
-			return getJSON().getString(key);
+			return getJSON().get(key);
 		} catch (JSONException e) {
 			return new String();
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setDataStore() {
-		Proxy.newProxyInstance(getClass().getClassLoader(), getDataStoreType(), 
+		_dataStore = (T) Proxy.newProxyInstance(getClass().getClassLoader(), getDataStoreType(), 
 				new InvocationHandler() {
 					
 					@Override

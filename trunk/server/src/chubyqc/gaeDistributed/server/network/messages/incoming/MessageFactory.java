@@ -45,7 +45,7 @@ public abstract class MessageFactory {
 		while ((line = reader.readLine()) != null) {
 			body.append(line);
 		}
-		return create(body.toString()); 
+		return create(body.toString());
 	}
 	
 	private void addCreator(MessageCreator creator) {
@@ -63,7 +63,7 @@ public abstract class MessageFactory {
 		private IncomingMessage<?> create(JSONObject json) {
 			try {
 				IncomingMessage<?> message = _messageType.newInstance();
-				message.initJSON(json);
+				message.setJSON(json);
 				return message;
 			} catch (Exception e) {
 				Logger.getInstance().fatal(e);
