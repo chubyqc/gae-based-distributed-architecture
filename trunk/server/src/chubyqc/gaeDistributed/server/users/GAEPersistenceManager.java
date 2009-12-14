@@ -55,6 +55,15 @@ public class GAEPersistenceManager
             
         }.getResult();
     }
+    
+    public User getUser(final String username) {
+    	return (User)new PMBlock(true) {
+			@Override
+			void execute() throws Exception {
+				setResult(getPM().getObjectById(User.class, username));
+			}
+    	}.getResult();
+    }
 
     boolean contains(final String id) {
         return (Boolean) new PMBlock() {

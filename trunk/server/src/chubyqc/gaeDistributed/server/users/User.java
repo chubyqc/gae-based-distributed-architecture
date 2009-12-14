@@ -1,12 +1,13 @@
 package chubyqc.gaeDistributed.server.users;
 
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import chubyqc.gaeDistributed.server.EmailManager;
-import chubyqc.gaeDistributed.server.client.commands.Commands;
+import chubyqc.gaeDistributed.server.client.states.commands.Commands;
 import chubyqc.gaeDistributed.server.network.ComManager;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.SendEmail;
@@ -19,7 +20,7 @@ public class User {
 	private static final String ERR_USER_EXISTS = "User already exists";
 	
 	public static final String URL_INCOMING = "dafti/incoming";
-	public static final String URL_BASE = "http://localhost:8080/";
+	public static final String URL_BASE = "http://localhost:8181/";
 	
 	@Persistent
     @PrimaryKey
@@ -29,7 +30,9 @@ public class User {
 	@Persistent
 	private String _email;
 	
+	@NotPersistent
 	private String _address;
+	@NotPersistent
 	private Commands _commands;
 	
 	User(String name, String password, String email) throws Exception {
@@ -85,5 +88,9 @@ public class User {
 	
 	public void send(OutgoingMessage message) {
 		ComManager.getInstance().send(_address, _name, message);
+	}
+	
+	public boolean isRightPassword(String password) {
+		return _password.equals(password);
 	}
 }

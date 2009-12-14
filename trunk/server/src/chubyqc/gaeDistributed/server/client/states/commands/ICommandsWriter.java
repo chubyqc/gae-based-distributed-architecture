@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.server.client.commands;
+package chubyqc.gaeDistributed.server.client.states.commands;
 
 public interface ICommandsWriter {
 	void print(Command command);
