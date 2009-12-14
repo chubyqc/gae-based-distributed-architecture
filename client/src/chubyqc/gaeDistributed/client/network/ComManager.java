@@ -3,6 +3,7 @@ package chubyqc.gaeDistributed.client.network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import chubyqc.gaeDistributed.client.Client;
 import chubyqc.gaeDistributed.client.commands.CommandsManager;
 import chubyqc.gaeDistributed.client.network.messages.outgoing.ClientBooted;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
@@ -43,7 +44,7 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 						});
 						server.start();
 						System.out.println("Client started");
-						send("myUsername", new ClientBooted());
+						Client.getInstance().send(new ClientBooted());
 						CommandsManager.getInstance().announce();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
