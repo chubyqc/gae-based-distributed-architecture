@@ -12,7 +12,7 @@ import chubyqc.gaeDistributed.client.Client;
 import chubyqc.gaeDistributed.client.network.messages.outgoing.SendCommands;
 import chubyqc.gaeDistributed.server.CommandsFactory;
 import chubyqc.gaeDistributed.server.Logger;
-import chubyqc.gaeDistributed.server.client.commands.Commands;
+import chubyqc.gaeDistributed.server.client.states.commands.Commands;
 
 public class CommandsManager extends Commands {
 	private static final long serialVersionUID = 1L;

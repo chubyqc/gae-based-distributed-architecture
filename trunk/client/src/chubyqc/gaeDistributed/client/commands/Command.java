@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Command extends
-		chubyqc.gaeDistributed.server.client.commands.Command {
+		chubyqc.gaeDistributed.server.client.states.commands.Command {
 
 	private static final long serialVersionUID = 1L;
 	private static final String SPACE = " ";
