@@ -37,7 +37,7 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 							
 							@Override
 							public void handle(HttpExchange content) throws IOException {
-								receive(content.getRequestBody());
+								receive(content.getRequestBody(), content.getRemoteAddress().getHostName());
 								content.sendResponseHeaders(200, -1);
 								content.close();
 							}
