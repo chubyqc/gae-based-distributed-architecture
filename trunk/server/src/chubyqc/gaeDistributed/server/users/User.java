@@ -7,6 +7,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import chubyqc.gaeDistributed.server.EmailManager;
+import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.client.states.commands.Commands;
 import chubyqc.gaeDistributed.server.network.ComManager;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
@@ -21,6 +22,7 @@ public class User {
 	
 	public static final String URL_INCOMING = "dafti/incoming";
 	public static final String URL_BASE = "http://localhost:8181/";
+	public static final String URL_FORMAT = "http://%s:8080";
 	
 	@Persistent
     @PrimaryKey
@@ -41,8 +43,12 @@ public class User {
 		setPassword(password);
 	}
 	
+	public void remember(Session session) {
+		session.setUsername(_name);
+	}
+	
 	public void setAddress(String address) {
-		_address = address;
+		_address = String.format(URL_FORMAT, address);
 	}
 	
 	public void setCommands(Commands commands) {
@@ -91,6 +97,6 @@ public class User {
 	}
 	
 	public boolean isRightPassword(String password) {
-		return _password.equals(password);
+		return _password.equals(Encoder.getInstance().encrypt(password));
 	}
 }

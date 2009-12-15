@@ -9,7 +9,7 @@ import chubyqc.gaeDistributed.server.users.Manager;
 public class SendCommands extends IncomingMessage<ISendCommands> {
 
 	@Override
-	public void execute() {
+	public void execute() throws Exception {
 		Manager.getInstance().setCommands(getUsername(), 
 				new Commands(CommandsFactory.getInstance().create(
 						Command.class, getDataStore().getCommands())));

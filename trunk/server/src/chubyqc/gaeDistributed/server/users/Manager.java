@@ -14,11 +14,12 @@ public class Manager {
 	}
 	
 	private static final String ERR_LOGIN_BAD = "Bad login.";
+	private static final String ERR_USER_NOT_FOUND = "User not found.";
 	
-	private Map<String, Commands> _commands;
+	private Map<String, User> _users;
 	
 	private Manager() {
-		_commands = new HashMap<String, Commands>();
+		_users = new HashMap<String, User>();
 	}
 	
 	public void login(Session session, String username, String password) throws Exception {
@@ -26,6 +27,7 @@ public class Manager {
 		if (!user.isRightPassword(password)) {
 			throw new Exception(ERR_LOGIN_BAD);
 		}
+		user.remember(session);
 	}
 	
 	public User createUser(String name, String password, String email) throws Exception {
@@ -36,23 +38,34 @@ public class Manager {
 		user.save();
 	}
 	
-	public void sendMessage(String username, OutgoingMessage message) {
-		User user = getUser(username);
-		if (user != null) {
-			user.send(message);
-		}
+	public void sendMessage(String username, OutgoingMessage message) throws Exception {
+		getUser(username).send(message);
 	}
 	
-	public void setCommands(String username, Commands commands) {
-		_commands.put(username, commands);
+	public void setCommands(String username, Commands commands) throws Exception {
+		getUser(username).setCommands(commands);
 	}
 	
-	public Commands getCommands(Session session) {
-		Commands commands = _commands.get(session.getUsername());
+	public void setAddress(String username, String address) throws Exception {
+		getUser(username).setAddress(address);
+	}
+	
+	public Commands getCommands(Session session) throws Exception {
+		Commands commands = getUser(session.getUsername()).getCommands();
 		return (commands == null) ? new Commands() : commands;
 	}
 	
-	private User getUser(String username) {
-		return GAEPersistenceManager.getInstance().getUser(username);
+	private User getUser(String username) throws Exception {
+		if (username == null) {
+			throw new Exception(ERR_USER_NOT_FOUND);
+		}
+		User user = _users.get(username);
+		if (user == null) {
+			_users.put(username, user = GAEPersistenceManager.getInstance().getUser(username));
+			if (user == null) {
+				throw new Exception(ERR_USER_NOT_FOUND);
+			}
+		}
+		return user;
 	}
 }

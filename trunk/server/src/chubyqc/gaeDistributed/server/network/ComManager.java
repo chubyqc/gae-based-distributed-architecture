@@ -1,11 +1,11 @@
 package chubyqc.gaeDistributed.server.network;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
 import chubyqc.gaeDistributed.server.Logger;
+import chubyqc.gaeDistributed.server.network.messages.incoming.IncomingMessage;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 import chubyqc.gaeDistributed.server.network.messages.incoming.ServerMessageFactory;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
@@ -24,10 +24,12 @@ public class ComManager {
 		_factory = factory;
 	}
 	
-	protected void receive(InputStream input) {
+	protected void receive(InputStream input, String address) {
 		try {
-			_factory.create(input).execute();
-		} catch (IOException e) {
+			IncomingMessage<?> message = _factory.create(input);
+			message.setAddress(address);
+			message.execute();
+		} catch (Exception e) {
 			Logger.getInstance().error(e);
 		}
 	}

@@ -12,6 +12,7 @@ import chubyqc.gaeDistributed.server.network.messages.Message;
 public abstract class IncomingMessage<T> extends Message {
 	
 	private T _dataStore;
+	private String _address;
 	
 	public IncomingMessage() {
 		setDataStore();
@@ -27,6 +28,14 @@ public abstract class IncomingMessage<T> extends Message {
 		} catch (JSONException e) {
 			return new String();
 		}
+	}
+	
+	protected String getAddress() {
+		return _address;
+	}
+	
+	public void setAddress(String address) {
+		_address = address;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -52,5 +61,5 @@ public abstract class IncomingMessage<T> extends Message {
 		};
 	}
 	
-	public abstract void execute();
+	public abstract void execute() throws Exception;
 }

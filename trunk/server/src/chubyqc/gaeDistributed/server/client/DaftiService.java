@@ -12,7 +12,7 @@ public interface DaftiService extends RemoteService {
 	
 	void register(String name, String password, String email) throws ClientException;
 	
-	void isBooted(String username);
+	void isBooted() throws ClientException;
 	
-	Commands getCommands();
+	Commands getCommands() throws ClientException;
 }
