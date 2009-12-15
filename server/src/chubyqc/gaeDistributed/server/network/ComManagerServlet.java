@@ -15,8 +15,8 @@ public class ComManagerServlet extends HttpServlet {
 	
 	private void doProcess(HttpServletRequest req) {
 		try {
-			ComManager.getInstance().receive(req.getInputStream());
-		} catch (IOException e) {
+			ComManager.getInstance().receive(req.getInputStream(), req.getRemoteAddr());
+		} catch (Exception e) {
 			Logger.getInstance().error(e);
 		}
 	}

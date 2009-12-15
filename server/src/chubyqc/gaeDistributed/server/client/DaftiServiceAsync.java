@@ -10,7 +10,7 @@ public interface DaftiServiceAsync {
 	
 	void register(String name, String password, String email, AsyncCallback<Void> callback);
 	
-	void isBooted(String clientAddress, AsyncCallback<Void> callback);
+	void isBooted(AsyncCallback<Void> callback);
 	
 	void getCommands(AsyncCallback<Commands> callback);
 }

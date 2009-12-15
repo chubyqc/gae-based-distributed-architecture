@@ -36,13 +36,21 @@ public class DaftiServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void isBooted(String username) {
-		Manager.getInstance().sendMessage(username, new IsClientBooted());
+	public void isBooted() throws ClientException {
+		try {
+			Manager.getInstance().sendMessage(getSession().getUsername(), new IsClientBooted());
+		} catch (Exception e) {
+			throw new ClientException(e);
+		}
 	}
 
 	@Override
-	public Commands getCommands() {
-		return Manager.getInstance().getCommands(getSession());
+	public Commands getCommands() throws ClientException {
+		try {
+			return Manager.getInstance().getCommands(getSession());
+		} catch (Exception e) {
+			throw new ClientException(e);
+		}
 	}
 	
 	private Session getSession() {

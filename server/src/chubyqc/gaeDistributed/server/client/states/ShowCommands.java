@@ -1,6 +1,7 @@
 package chubyqc.gaeDistributed.server.client.states;
 
 import chubyqc.gaeDistributed.server.client.BaseCallback;
+import chubyqc.gaeDistributed.server.client.Dafti;
 import chubyqc.gaeDistributed.server.client.states.commands.Command;
 import chubyqc.gaeDistributed.server.client.states.commands.Commands;
 import chubyqc.gaeDistributed.server.client.states.commands.ICommandsWriter;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.Panel;
 public class ShowCommands extends BaseState implements ICommandsWriter {
 	
 	private static final String UI_COMMANDS_BUTTON = "Show";
+	private static final String ERR_NO_COMMANDS = "There is no commands.";
 	
 	private Grid _commandsGrid;
 
@@ -41,6 +43,9 @@ public class ShowCommands extends BaseState implements ICommandsWriter {
 			@Override
 			public void onSuccess(Commands result) {
 				result.printCommands(ShowCommands.this);
+				if (_commandsGrid.getRowCount() == 0) {
+					Dafti.getInstance().inform(ERR_NO_COMMANDS);
+				}
 			}
 		});
 	}
