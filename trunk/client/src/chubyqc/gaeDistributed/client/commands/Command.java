@@ -3,7 +3,6 @@ package chubyqc.gaeDistributed.client.commands;
 import java.io.IOException;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,24 +11,21 @@ public class Command extends
 
 	private static final long serialVersionUID = 1L;
 	private static final String SPACE = " ";
-	private static final String KEY_NAME = "name";
-	private static final String KEY_VALUE = "value";
 	
 	public Command(String name, String exec, Map<String, String> parameters) throws JSONException {
 		super(name, exec, parameters);
 	}
 	
-	public void execute(JSONArray parameters) throws IOException, JSONException {
+	public void execute(JSONObject parameters) throws IOException, JSONException {
 		Runtime.getRuntime().exec(createCommandLine(parameters));
 	}
 	
-	private String createCommandLine(JSONArray parameters) throws JSONException {
+	private String createCommandLine(JSONObject parameters) throws JSONException {
 		StringBuilder cmdLine = new StringBuilder(_exec);
-		for (int i = 0; i < parameters.length(); ++i) {
-			JSONObject parameter = parameters.getJSONObject(i);
+		for (String name : JSONObject.getNames(parameters)) {
 			cmdLine.append(SPACE);
-			cmdLine.append(parameter.getString(KEY_NAME));
-			cmdLine.append(parameter.getString(KEY_VALUE));
+			cmdLine.append(name);
+			cmdLine.append(parameters.get(name));
 		}
 		return cmdLine.toString();
 	}

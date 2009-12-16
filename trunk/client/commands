@@ -2,13 +2,12 @@
   commands: [{
     name: "Launch Transmission",
     exec: "transmission",
-    parameters: []
+    parameters: {}
   }, {
     name: "Launch torrent",
     exec: "transmission-remote",
-    parameters: [{
-      name: "-a",
-      value: "specify url"
-    }]
+    parameters: {
+      "-a": "specify url"
+    }
   }]
 }

@@ -36,7 +36,7 @@ public class CommandsManager extends Commands {
 		Client.getInstance().send(new SendCommands(_commandsJSON));
 	}
 	
-	public void execute(String commandName, JSONArray parameters) throws IOException, JSONException {
+	public void execute(String commandName, JSONObject parameters) throws IOException, JSONException {
 		((Command)_commands.get(commandName)).execute(parameters);
 	}
 	
