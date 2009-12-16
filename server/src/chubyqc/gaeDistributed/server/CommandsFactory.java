@@ -17,7 +17,6 @@ public class CommandsFactory {
 	
 	private static final String KEY_NAME = "name";
 	private static final String KEY_EXEC = "exec";
-	private static final String KEY_VALUE = "value";
 	private static final String KEY_PARAMETERS = "parameters";
 	
 	private CommandsFactory() {}
@@ -42,20 +41,18 @@ public class CommandsFactory {
 					String.class, String.class, Map.class).newInstance(
 							command.getString(KEY_NAME), 
 							command.getString(KEY_EXEC),
-							createParameters(command.getJSONArray(KEY_PARAMETERS)));
+							createParameters(command.getJSONObject(KEY_PARAMETERS)));
 		} catch (Exception e) {
 			Logger.getInstance().fatal(e);
 		}
 		return null;
 	}
 
-	private static Map<String, String> createParameters(JSONArray jsonArray) throws JSONException {
+	private static Map<String, String> createParameters(JSONObject jsonObject) throws JSONException {
 		Map<String, String> parameters = new HashMap<String, String>();
-		if (jsonArray != null) {
-			for (int i = 0; i < jsonArray.length(); ++i ) {
-				JSONObject parameter = jsonArray.getJSONObject(0);
-				parameters.put(parameter.getString(KEY_NAME), 
-						parameter.getString(KEY_VALUE));
+		if (jsonObject != null) {
+			for (String name : JSONObject.getNames(jsonObject)) {
+				parameters.put(name, jsonObject.getString(name));
 			}
 		}
 		return parameters;

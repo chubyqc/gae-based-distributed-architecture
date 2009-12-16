@@ -1,15 +1,15 @@
 package chubyqc.gaeDistributed.server.network.messages.outgoing;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import chubyqc.gaeDistributed.server.network.messages.specs.IExecuteCommand;
 
 public class ExecuteCommand extends OutgoingMessage implements IExecuteCommand {
 	
 	private String _name;
-	private JSONArray _parameters;
+	private JSONObject _parameters;
 	
-	public ExecuteCommand(String name, JSONArray parameters) {
+	public ExecuteCommand(String name, JSONObject parameters) {
 		_name = name;
 		_parameters = parameters;
 	}
@@ -20,7 +20,7 @@ public class ExecuteCommand extends OutgoingMessage implements IExecuteCommand {
 	}
 
 	@Override
-	public JSONArray getParameters() {
+	public JSONObject getParameters() {
 		return _parameters;
 	}
 }

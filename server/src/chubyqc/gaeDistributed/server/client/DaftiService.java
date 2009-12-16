@@ -1,5 +1,7 @@
 package chubyqc.gaeDistributed.server.client;
 
+import java.util.Map;
+
 import chubyqc.gaeDistributed.server.client.states.commands.Commands;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -15,4 +17,6 @@ public interface DaftiService extends RemoteService {
 	void isBooted() throws ClientException;
 	
 	Commands getCommands() throws ClientException;
+	
+	void invoke(String commandName, Map<String, String> paramValues) throws ClientException;
 }

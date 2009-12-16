@@ -1,5 +1,8 @@
 package chubyqc.gaeDistributed.server.client.states;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import chubyqc.gaeDistributed.server.client.BaseCallback;
 import chubyqc.gaeDistributed.server.client.Dafti;
 import chubyqc.gaeDistributed.server.client.states.commands.Command;
@@ -10,12 +13,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.TextBox;
 
 public class ShowCommands extends BaseState implements ICommandsWriter {
 	
 	private static final String UI_COMMANDS_BUTTON = "Show";
 	private static final String ERR_NO_COMMANDS = "There is no commands.";
+	private static final String UI_INVOKE = "Invoke";
 	
 	private Grid _commandsGrid;
 
@@ -51,8 +58,28 @@ public class ShowCommands extends BaseState implements ICommandsWriter {
 	}
 
 	@Override
-	public void print(Command command) {
+	public void print(final Command command) {
+		final Map<String, TextBox> values = new HashMap<String, TextBox>();
+		final Panel panel = new HorizontalPanel();
 		int row = _commandsGrid.insertRow(_commandsGrid.getRowCount());
-		_commandsGrid.setText(row, 0, command.getName());
+		_commandsGrid.setWidget(row, 0, panel);
+		
+		for (Map.Entry<String, String> entry : command.getParametersSpec().entrySet()) {
+			panel.add(new Label(entry.getKey()));
+			TextBox textBox = new TextBox();
+			textBox.setText(entry.getValue());
+			panel.add(textBox);
+		}
+		
+		panel.add(new Button(UI_INVOKE, new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Map<String, String> paramValues = new HashMap<String, String>();
+				for (Map.Entry<String, TextBox> value : values.entrySet()) {
+					paramValues.put(value.getKey(), value.getValue().getText());
+				}
+				getService().invoke(command.getName(), paramValues, new BaseCallback<Void>());
+			}
+		}));
 	}
 }
