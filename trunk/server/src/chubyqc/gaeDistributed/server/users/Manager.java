@@ -5,7 +5,6 @@ import java.util.Map;
 
 import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.client.states.commands.Commands;
-import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 
 public class Manager {
 	private static Manager instance = new Manager();
@@ -38,21 +37,25 @@ public class Manager {
 		user.save();
 	}
 	
-	public void sendMessage(String username, OutgoingMessage message) throws Exception {
-		getUser(username).send(message);
-	}
-	
 	public void setCommands(String username, Commands commands) throws Exception {
 		getUser(username).setCommands(commands);
+	}
+	
+	public void isBooted(String username) throws Exception {
+		getUser(username).isBooted();
 	}
 	
 	public void setAddress(String username, String address) throws Exception {
 		getUser(username).setAddress(address);
 	}
 	
-	public Commands getCommands(Session session) throws Exception {
-		Commands commands = getUser(session.getUsername()).getCommands();
+	public Commands getCommands(String username) throws Exception {
+		Commands commands = getUser(username).getCommands();
 		return (commands == null) ? new Commands() : commands;
+	}
+	
+	public void invoke(String username, String commandName, Map<String, String> paramValues) throws Exception {
+		getUser(username).invoke(commandName, paramValues);
 	}
 	
 	private User getUser(String username) throws Exception {

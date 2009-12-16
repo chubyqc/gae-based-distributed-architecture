@@ -1,15 +1,21 @@
 package chubyqc.gaeDistributed.server.users;
 
+import java.util.Map;
+
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.json.JSONObject;
+
 import chubyqc.gaeDistributed.server.EmailManager;
 import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.client.states.commands.Commands;
 import chubyqc.gaeDistributed.server.network.ComManager;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.ExecuteCommand;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.IsClientBooted;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.SendEmail;
 
@@ -59,6 +65,14 @@ public class User {
 		return _commands;
 	}
 	
+	public void isBooted() {
+		send(new IsClientBooted());
+	}
+	
+	public void invoke(String commandName, Map<String, String> paramValues) {
+		send(new ExecuteCommand(commandName, new JSONObject(paramValues)));
+	}
+	
 	private void setEmail(String email) throws Exception {
 		if (!EmailManager.getInstance().isValid(email)) {
 			throw new UserException(String.format(ERR_EMAIL, email));
@@ -92,7 +106,7 @@ public class User {
 				URL_BASE + URL_INCOMING, _name, new SendEmail(_email));
 	}
 	
-	public void send(OutgoingMessage message) {
+	private void send(OutgoingMessage message) {
 		ComManager.getInstance().send(_address, _name, message);
 	}
 	
