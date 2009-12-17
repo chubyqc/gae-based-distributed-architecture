@@ -22,10 +22,14 @@ public class Command extends
 	
 	private String createCommandLine(JSONObject parameters) throws JSONException {
 		StringBuilder cmdLine = new StringBuilder(_exec);
-		for (String name : JSONObject.getNames(parameters)) {
-			cmdLine.append(SPACE);
-			cmdLine.append(name);
-			cmdLine.append(parameters.get(name));
+		String[] names = JSONObject.getNames(parameters);
+		if (names != null) {
+			for (String name : names) {
+				cmdLine.append(SPACE);
+				cmdLine.append(name);
+				cmdLine.append(SPACE);
+				cmdLine.append(parameters.get(name));
+			}
 		}
 		return cmdLine.toString();
 	}
