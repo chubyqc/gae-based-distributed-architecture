@@ -51,8 +51,11 @@ public class CommandsFactory {
 	private static Map<String, String> createParameters(JSONObject jsonObject) throws JSONException {
 		Map<String, String> parameters = new HashMap<String, String>();
 		if (jsonObject != null) {
-			for (String name : JSONObject.getNames(jsonObject)) {
-				parameters.put(name, jsonObject.getString(name));
+			String[] names = JSONObject.getNames(jsonObject);
+			if (names != null) {
+				for (String name : names) {
+					parameters.put(name, jsonObject.getString(name));
+				}
 			}
 		}
 		return parameters;

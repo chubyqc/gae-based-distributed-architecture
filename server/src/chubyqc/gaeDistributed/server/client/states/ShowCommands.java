@@ -49,6 +49,7 @@ public class ShowCommands extends BaseState implements ICommandsWriter {
 		getService().getCommands(new BaseCallback<Commands>() {
 			@Override
 			public void onSuccess(Commands result) {
+				_commandsGrid.resizeRows(0);
 				result.printCommands(ShowCommands.this);
 				if (_commandsGrid.getRowCount() == 0) {
 					Dafti.getInstance().inform(ERR_NO_COMMANDS);
@@ -64,11 +65,15 @@ public class ShowCommands extends BaseState implements ICommandsWriter {
 		int row = _commandsGrid.insertRow(_commandsGrid.getRowCount());
 		_commandsGrid.setWidget(row, 0, panel);
 		
+		panel.add(new Label(command.getName()));
+		
 		for (Map.Entry<String, String> entry : command.getParametersSpec().entrySet()) {
-			panel.add(new Label(entry.getKey()));
 			TextBox textBox = new TextBox();
 			textBox.setText(entry.getValue());
+
+			panel.add(new Label(entry.getKey()));
 			panel.add(textBox);
+			values.put(entry.getKey(), textBox);
 		}
 		
 		panel.add(new Button(UI_INVOKE, new ClickHandler() {
