@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.server.client.states;
+package chubyqc.gaeDistributed.server.client.widgets;
 
 import chubyqc.gaeDistributed.server.client.BaseCallback;
 import chubyqc.gaeDistributed.server.client.Dafti;
@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class Login extends BaseState {
+public class Login extends AbstractWidget {
 
 	private final static String UI_LOGIN_BUTTON = "Login";
 	
@@ -19,8 +19,6 @@ public class Login extends BaseState {
 
 	@Override
 	protected void init(Panel container) {
-		super.init(container);
-		
 		container.add(_username = new TextBox());
 		container.add(_password = new PasswordTextBox());
 		
@@ -39,6 +37,7 @@ public class Login extends BaseState {
 		getService().login(_username.getText(), _password.getText(), new BaseCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
+				Dafti.getInstance().startConsole();
 				Dafti.getInstance().showCommands();
 			}
 		});

@@ -1,13 +1,13 @@
-package chubyqc.gaeDistributed.server.client.states;
+package chubyqc.gaeDistributed.server.client.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import chubyqc.gaeDistributed.server.client.BaseCallback;
 import chubyqc.gaeDistributed.server.client.Dafti;
-import chubyqc.gaeDistributed.server.client.states.commands.Command;
-import chubyqc.gaeDistributed.server.client.states.commands.Commands;
-import chubyqc.gaeDistributed.server.client.states.commands.ICommandsWriter;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Command;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.commands.ICommandsWriter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class ShowCommands extends BaseState implements ICommandsWriter {
+public class ShowCommands extends AbstractWidget implements ICommandsWriter {
 	
 	private static final String UI_COMMANDS_BUTTON = "Show";
 	private static final String ERR_NO_COMMANDS = "There is no commands.";
@@ -28,9 +28,7 @@ public class ShowCommands extends BaseState implements ICommandsWriter {
 
 	@Override
 	protected void init(Panel container) {
-		super.init(container);
-		
-		new BaseState().addTo(container);
+		new Menu().addTo(container);
 		
 		Button getCommands = new Button(UI_COMMANDS_BUTTON);
 		container.add(getCommands);

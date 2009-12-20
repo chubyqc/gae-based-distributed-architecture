@@ -5,7 +5,8 @@ import java.util.Map;
 import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.client.ClientException;
 import chubyqc.gaeDistributed.server.client.DaftiService;
-import chubyqc.gaeDistributed.server.client.states.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.console.Message;
 import chubyqc.gaeDistributed.server.users.Manager;
 import chubyqc.gaeDistributed.server.users.User;
 
@@ -58,6 +59,15 @@ public class DaftiServiceImpl extends RemoteServiceServlet implements
 	public void invoke(String commandName, Map<String, String> paramValues) throws ClientException {
 		try {
 			Manager.getInstance().invoke(getSession().getUsername(), commandName, paramValues);
+		} catch (Exception e) {
+			throw new ClientException(e);
+		}
+	}
+	
+	@Override
+	public Message[] flushMessages() throws ClientException {
+		try {
+			return Manager.getInstance().flushMessages(getSession().getUsername());
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}

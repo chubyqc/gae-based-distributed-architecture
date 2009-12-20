@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import chubyqc.gaeDistributed.server.Session;
-import chubyqc.gaeDistributed.server.client.states.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.console.Message;
 
 public class Manager {
 	private static Manager instance = new Manager();
@@ -56,6 +57,14 @@ public class Manager {
 	
 	public void invoke(String username, String commandName, Map<String, String> paramValues) throws Exception {
 		getUser(username).invoke(commandName, paramValues);
+	}
+
+	public void inform(String username, String message) throws Exception {
+		getUser(username).inform(message);
+	}
+	
+	public Message[] flushMessages(String username) throws Exception {
+		return getUser(username).flushMessages();
 	}
 	
 	private User getUser(String username) throws Exception {

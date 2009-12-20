@@ -1,5 +1,7 @@
 package chubyqc.gaeDistributed.server.users;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.jdo.annotations.IdentityType;
@@ -12,7 +14,8 @@ import org.json.JSONObject;
 
 import chubyqc.gaeDistributed.server.EmailManager;
 import chubyqc.gaeDistributed.server.Session;
-import chubyqc.gaeDistributed.server.client.states.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.console.Message;
 import chubyqc.gaeDistributed.server.network.ComManager;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.ExecuteCommand;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.IsClientBooted;
@@ -42,8 +45,15 @@ public class User {
 	private String _address;
 	@NotPersistent
 	private Commands _commands;
+	@NotPersistent
+	private Collection<Message> _messages;
+	
+	User() {
+		_messages = new LinkedList<Message>();
+	}
 	
 	User(String name, String password, String email) throws Exception {
+		this();
 		_name = name;
 		setEmail(email);
 		setPassword(password);
@@ -55,6 +65,7 @@ public class User {
 	
 	public void setAddress(String address) {
 		_address = String.format(URL_FORMAT, address);
+		inform(_address);
 	}
 	
 	public void setCommands(Commands commands) {
@@ -112,5 +123,31 @@ public class User {
 	
 	public boolean isRightPassword(String password) {
 		return _password.equals(Encoder.getInstance().encrypt(password));
+	}
+
+	public void inform(String message) {
+		synchronized (_messages) {
+			_messages.add(new Message(message));
+			_messages.notify();
+		}
+	}
+	
+	public Message[] flushMessages() {
+		synchronized (_messages) {
+			if (_messages.size() == 0) {
+				wait(_messages);
+			}
+			Message[] messages = _messages.toArray(new Message[_messages.size()]);
+			_messages.clear();
+			return messages;
+		} 
+	}
+	
+	private void wait(Object obj) {
+		try {
+			obj.wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

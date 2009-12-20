@@ -1,15 +1,17 @@
 package chubyqc.gaeDistributed.server.client;
 
-import chubyqc.gaeDistributed.server.client.states.AbstractState;
-import chubyqc.gaeDistributed.server.client.states.BaseState;
-import chubyqc.gaeDistributed.server.client.states.IsBooted;
-import chubyqc.gaeDistributed.server.client.states.Login;
-import chubyqc.gaeDistributed.server.client.states.Register;
-import chubyqc.gaeDistributed.server.client.states.ShowCommands;
+import chubyqc.gaeDistributed.server.client.widgets.AbstractWidget;
+import chubyqc.gaeDistributed.server.client.widgets.Console;
+import chubyqc.gaeDistributed.server.client.widgets.IsBooted;
+import chubyqc.gaeDistributed.server.client.widgets.Login;
+import chubyqc.gaeDistributed.server.client.widgets.Menu;
+import chubyqc.gaeDistributed.server.client.widgets.Register;
+import chubyqc.gaeDistributed.server.client.widgets.ShowCommands;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -23,43 +25,48 @@ public class Dafti implements EntryPoint {
 	
     private static final String UI_SUCCESS = "Call was successful.";
 
-    private Label _messageLabel;
     private DaftiServiceAsync _service;
-    private AbstractState _register;
-    private AbstractState _login;
-    private AbstractState _showCommands;
-    private AbstractState _isBooted;
-    private AbstractState _home;
+    private AbstractWidget _register;
+    private AbstractWidget _login;
+    private AbstractWidget _showCommands;
+    private AbstractWidget _isBooted;
     
-    private AbstractState _currentState;
+    private AbstractWidget _currentContent;
+    private Console _console;
 
 	public void onModuleLoad()
     {
 		_instance = this;
 		_service = GWT.create(DaftiService.class);
+		Panel root = RootPanel.get();
+		Panel content = new AbsolutePanel();
 		
-        _messageLabel = new Label();
-        RootPanel.get().add(_messageLabel);
+        root.add(content);
 
-        (_currentState = _home = new BaseState()).addTo(RootPanel.get());
-        (_register = new Register()).addTo(RootPanel.get());
-        (_login = new Login()).addTo(RootPanel.get());
-        (_showCommands = new ShowCommands()).addTo(RootPanel.get());
-        (_isBooted = new IsBooted()).addTo(RootPanel.get());
+        Menu menu = new Menu();
+        menu.show();
+        menu.addTo(content);
+        
+        (_currentContent = _register = new Register()).addTo(content);
+        (_login = new Login()).addTo(content);
+        (_showCommands = new ShowCommands()).addTo(content);
+        (_isBooted = new IsBooted()).addTo(content);
+        
+        (_console = new Console()).addTo(root);
         
         showHome();
     }
 
-	public void showHome() { setState(_home); }
+	public void showHome() { _currentContent.hide(); }
 	public void showRegister() { setState(_register); }
 	public void showLogin() { setState(_login); }
 	public void showCommands() { setState(_showCommands); }
 	public void showIsBooted() { setState(_isBooted); }
 	
-	private void setState(AbstractState state) {
-		_currentState.hide();
+	private void setState(AbstractWidget state) {
+		_currentContent.hide();
 		state.show();
-		_currentState = state;
+		_currentContent = state;
 	}
 	
 	public DaftiServiceAsync getService() {
@@ -67,10 +74,18 @@ public class Dafti implements EntryPoint {
 	}
 	
 	public void informOfSuccess() {
-		_messageLabel.setText(UI_SUCCESS);
+		_console.append(UI_SUCCESS);
 	}
 	
 	public void inform(String message) {
-		_messageLabel.setText(message);
+		_console.append(message);
+	}
+	
+	public void startConsole() {
+		_console.start();
+	}
+	
+	public void stopConsole() {
+		_console.stop();
 	}
 }

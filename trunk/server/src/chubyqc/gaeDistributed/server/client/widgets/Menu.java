@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.server.client.states;
+package chubyqc.gaeDistributed.server.client.widgets;
 
 import chubyqc.gaeDistributed.server.client.Dafti;
 
@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
 
-public class BaseState extends AbstractState {
+public class Menu extends AbstractWidget {
 	
 	private static final String UI_HOME = "Home";
 	private static final String UI_REGISTER = "Register";

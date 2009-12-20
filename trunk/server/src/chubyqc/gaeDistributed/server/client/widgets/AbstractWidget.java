@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.server.client.states;
+package chubyqc.gaeDistributed.server.client.widgets;
 
 import chubyqc.gaeDistributed.server.client.Dafti;
 import chubyqc.gaeDistributed.server.client.DaftiServiceAsync;
@@ -6,11 +6,11 @@ import chubyqc.gaeDistributed.server.client.DaftiServiceAsync;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Panel;
 
-public abstract class AbstractState {
+public abstract class AbstractWidget {
 
 	private AbsolutePanel _panel;
 	
-	public AbstractState() {
+	public AbstractWidget() {
 		_panel = new AbsolutePanel();
 		hide();
 		init(_panel);
