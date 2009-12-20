@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Command extends
-		chubyqc.gaeDistributed.server.client.states.commands.Command {
+		chubyqc.gaeDistributed.server.client.widgets.commands.Command {
 
 	private static final long serialVersionUID = 1L;
 	private static final String SPACE = " ";
@@ -17,7 +17,8 @@ public class Command extends
 	}
 	
 	public void execute(JSONObject parameters) throws IOException, JSONException {
-		Runtime.getRuntime().exec(createCommandLine(parameters));
+		Process process = Runtime.getRuntime().exec(createCommandLine(parameters));
+		new ProcessListener(process).start();
 	}
 	
 	private String createCommandLine(JSONObject parameters) throws JSONException {
