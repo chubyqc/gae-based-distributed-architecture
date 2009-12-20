@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.server.client.states.commands;
+package chubyqc.gaeDistributed.server.client.widgets.commands;
 
 import java.io.Serializable;
 import java.util.Map;

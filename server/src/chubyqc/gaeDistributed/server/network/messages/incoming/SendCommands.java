@@ -1,8 +1,8 @@
 package chubyqc.gaeDistributed.server.network.messages.incoming;
 
 import chubyqc.gaeDistributed.server.CommandsFactory;
-import chubyqc.gaeDistributed.server.client.states.commands.Command;
-import chubyqc.gaeDistributed.server.client.states.commands.Commands;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Command;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Commands;
 import chubyqc.gaeDistributed.server.network.messages.specs.ISendCommands;
 import chubyqc.gaeDistributed.server.users.Manager;
 

@@ -1,4 +1,4 @@
-package chubyqc.gaeDistributed.server.client.states;
+package chubyqc.gaeDistributed.server.client.widgets;
 
 
 import chubyqc.gaeDistributed.server.client.BaseCallback;
@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class Register extends BaseState {
+public class Register extends AbstractWidget {
 	
 	private static final String UI_EMAIL_LABEL = "Email :";
     private static final String UI_NAME_LABEL = "User name :";
@@ -24,9 +24,7 @@ public class Register extends BaseState {
 
 	@Override
 	protected void init(Panel container) {
-		super.init(container);
-		
-	    Grid formTable = new Grid(3, 2);
+		Grid formTable = new Grid(3, 2);
 	    _emailTextBox = new TextBox();
 	    _nameTextBox = new TextBox();
 	    _passwordTextBox = new PasswordTextBox();

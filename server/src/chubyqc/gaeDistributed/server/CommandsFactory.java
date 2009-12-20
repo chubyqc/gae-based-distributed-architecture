@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import chubyqc.gaeDistributed.server.client.states.commands.Command;
+import chubyqc.gaeDistributed.server.client.widgets.commands.Command;
 
 public class CommandsFactory {
 	private static CommandsFactory _instance = new CommandsFactory();

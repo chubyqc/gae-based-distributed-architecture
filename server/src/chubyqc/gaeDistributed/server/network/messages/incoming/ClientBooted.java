@@ -8,7 +8,6 @@ public class ClientBooted extends IncomingMessage<IClientBooted> {
 	@Override
 	public void execute() throws Exception {
 		Manager.getInstance().setAddress(getUsername(), getAddress());
-		System.out.println("Client booted.");
 	}
 
 }

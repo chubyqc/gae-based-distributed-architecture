@@ -11,6 +11,7 @@ public class ServerMessageFactory extends MessageFactory {
 		super(
 				SendEmail.class, 
 				ClientBooted.class,
-				SendCommands.class);
+				SendCommands.class,
+				Inform.class);
 	}
 }
