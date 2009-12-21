@@ -5,10 +5,13 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import chubyqc.gaeDistributed.server.Logger;
+import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.network.messages.incoming.IncomingMessage;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 import chubyqc.gaeDistributed.server.network.messages.incoming.ServerMessageFactory;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.NotLogon;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
+import chubyqc.gaeDistributed.server.users.UserException;
 
 public class ComManager {	
 	private static ComManager _instance = new ComManager(ServerMessageFactory.getInstance());
@@ -24,19 +27,21 @@ public class ComManager {
 		_factory = factory;
 	}
 	
-	protected void receive(InputStream input, String address) {
+	protected void receive(InputStream input, String address, Session session) {
 		try {
 			IncomingMessage<?> message = _factory.create(input);
 			message.setAddress(address);
+			message.setSession(session);
 			message.execute();
+		} catch (UserException e) {
+			send(address, new NotLogon());
 		} catch (Exception e) {
 			Logger.getInstance().error(e);
 		}
 	}
 
-	public void send(String address, String username, OutgoingMessage message) {
+	public void send(String address, OutgoingMessage message) {
 		try {
-			message.setUsername(username);
 			message.populateJSON();
 			URLConnection connection = new URL(address).openConnection();
 			connection.setDoOutput(true);

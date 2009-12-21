@@ -7,12 +7,15 @@ import java.lang.reflect.Proxy;
 
 import org.json.JSONException;
 
+import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.network.messages.Message;
+import chubyqc.gaeDistributed.server.users.UserException;
 
 public abstract class IncomingMessage<T> extends Message {
 	
 	private T _dataStore;
 	private String _address;
+	private Session _session;
 	
 	public IncomingMessage() {
 		setDataStore();
@@ -38,6 +41,18 @@ public abstract class IncomingMessage<T> extends Message {
 		_address = address;
 	}
 	
+	public void setSession(Session session) {
+		_session = session;
+	}
+	
+	public Session getSession() {
+		return _session;
+	}
+	
+	public String getUsername() {
+		return _session.getUsername();
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void setDataStore() {
 		_dataStore = (T) Proxy.newProxyInstance(getClass().getClassLoader(), getDataStoreType(), 
@@ -61,5 +76,5 @@ public abstract class IncomingMessage<T> extends Message {
 		};
 	}
 	
-	public abstract void execute() throws Exception;
+	public abstract void execute() throws UserException, Exception;
 }

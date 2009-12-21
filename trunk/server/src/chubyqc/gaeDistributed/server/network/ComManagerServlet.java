@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import chubyqc.gaeDistributed.server.Logger;
+import chubyqc.gaeDistributed.server.Session;
 
 public class ComManagerServlet extends HttpServlet {
 
@@ -15,7 +16,8 @@ public class ComManagerServlet extends HttpServlet {
 	
 	private void doProcess(HttpServletRequest req) {
 		try {
-			ComManager.getInstance().receive(req.getInputStream(), req.getRemoteAddr());
+			ComManager.getInstance().receive(req.getInputStream(), req.getRemoteAddr(),
+					new Session(req.getSession()));
 		} catch (Exception e) {
 			Logger.getInstance().error(e);
 		}

@@ -38,7 +38,7 @@ public class Manager {
 		user.save();
 	}
 	
-	public void setCommands(String username, Commands commands) throws Exception {
+	public void setCommands(String username, Commands commands) throws UserException {
 		getUser(username).setCommands(commands);
 	}
 	
@@ -46,7 +46,7 @@ public class Manager {
 		getUser(username).isBooted();
 	}
 	
-	public void setAddress(String username, String address) throws Exception {
+	public void setAddress(String username, String address) throws UserException {
 		getUser(username).setAddress(address);
 	}
 	
@@ -59,7 +59,7 @@ public class Manager {
 		getUser(username).invoke(commandName, paramValues);
 	}
 
-	public void inform(String username, String message) throws Exception {
+	public void inform(String username, String message) throws UserException {
 		getUser(username).inform(message);
 	}
 	
@@ -67,15 +67,15 @@ public class Manager {
 		return getUser(username).flushMessages();
 	}
 	
-	private User getUser(String username) throws Exception {
+	private User getUser(String username) throws UserException {
 		if (username == null) {
-			throw new Exception(ERR_USER_NOT_FOUND);
+			throw new UserException(ERR_USER_NOT_FOUND);
 		}
 		User user = _users.get(username);
 		if (user == null) {
 			_users.put(username, user = GAEPersistenceManager.getInstance().getUser(username));
 			if (user == null) {
-				throw new Exception(ERR_USER_NOT_FOUND);
+				throw new UserException(ERR_USER_NOT_FOUND);
 			}
 		}
 		return user;

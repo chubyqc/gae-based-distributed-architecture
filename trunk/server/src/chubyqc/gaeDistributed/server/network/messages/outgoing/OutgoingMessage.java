@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import chubyqc.gaeDistributed.server.Logger;
 import chubyqc.gaeDistributed.server.network.messages.Message;
-import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 
 public abstract class OutgoingMessage extends Message {
 	
@@ -35,7 +34,6 @@ public abstract class OutgoingMessage extends Message {
 				}
 			}
 		}
-		setAttribute(MessageFactory.METHOD_GETUSERNAME, getUsername());
 	}
 	
 	protected void setAttribute(String key, Object value) {

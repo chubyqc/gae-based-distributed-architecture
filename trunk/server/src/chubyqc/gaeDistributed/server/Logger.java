@@ -27,4 +27,8 @@ public class Logger {
 	public void fatal(Throwable t) {
 		_logger.log(Level.SEVERE, t.getMessage(), t);
 	}
+	
+	public void fatal(String message) {
+		_logger.log(Level.SEVERE, message);
+	}
 }

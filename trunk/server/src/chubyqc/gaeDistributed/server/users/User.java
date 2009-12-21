@@ -114,11 +114,11 @@ public class User {
 	
 	private void sendConfirmationEmail() {
 		ComManager.getInstance().send(
-				URL_BASE + URL_INCOMING, _name, new SendEmail(_email));
+				URL_BASE + URL_INCOMING, new SendEmail(_email));
 	}
 	
 	private void send(OutgoingMessage message) {
-		ComManager.getInstance().send(_address, _name, message);
+		ComManager.getInstance().send(_address, message);
 	}
 	
 	public boolean isRightPassword(String password) {

@@ -8,21 +8,12 @@ public abstract class Message {
 	public static final String KEY_METHOD = "method";
 
 	private JSONObject _json;
-	private String _username;
 	
 	protected Message() {
 	}
 	
 	protected Message(JSONObject json) {
 		_json = json;
-	}
-	
-	public void setUsername(String username) {
-		_username = username;
-	}
-	
-	protected String getUsername() {
-		return _username;
 	}
 	
 	public void setJSON(JSONObject json) {

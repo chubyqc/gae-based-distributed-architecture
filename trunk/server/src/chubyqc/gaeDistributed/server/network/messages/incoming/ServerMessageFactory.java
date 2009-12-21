@@ -10,7 +10,7 @@ public class ServerMessageFactory extends MessageFactory {
 	public ServerMessageFactory() {
 		super(
 				SendEmail.class, 
-				ClientBooted.class,
+				Login.class,
 				SendCommands.class,
 				Inform.class);
 	}
