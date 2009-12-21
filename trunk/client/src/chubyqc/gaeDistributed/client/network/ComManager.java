@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import chubyqc.gaeDistributed.client.Client;
-import chubyqc.gaeDistributed.client.commands.CommandsManager;
-import chubyqc.gaeDistributed.client.network.messages.outgoing.ClientBooted;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 
@@ -22,8 +20,8 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 		_serverAddress = serverAddress;
 	}
 	
-	public void send(String username, OutgoingMessage message) {
-		send(_serverAddress, username, message);
+	public void send(OutgoingMessage message) {
+		send(_serverAddress, message);
 	}
 	
 	public void start() {
@@ -37,15 +35,15 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 							
 							@Override
 							public void handle(HttpExchange content) throws IOException {
-								receive(content.getRequestBody(), content.getRemoteAddress().getHostName());
+								receive(content.getRequestBody(), content.getRemoteAddress().getHostName(),
+										null);
 								content.sendResponseHeaders(200, -1);
 								content.close();
 							}
 						});
 						server.start();
 						System.out.println("Client started");
-						Client.getInstance().send(new ClientBooted());
-						CommandsManager.getInstance().announce();
+						Client.getInstance().login();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
