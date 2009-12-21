@@ -15,8 +15,6 @@ import chubyqc.gaeDistributed.server.network.messages.Message;
 
 public abstract class MessageFactory {
 	
-	public static final String METHOD_GETUSERNAME = "getUsername";
-	
 	private Map<String, MessageCreator> _creators;
 	
 	protected MessageFactory(Class<? extends IncomingMessage<?>>... messageTypes) {
@@ -65,8 +63,6 @@ public abstract class MessageFactory {
 		private IncomingMessage<?> create(JSONObject json) {
 			try {
 				IncomingMessage<?> message = _messageType.newInstance();
-				message.setUsername(json.getString(METHOD_GETUSERNAME));
-				json.remove(METHOD_GETUSERNAME);
 				message.setJSON(json);
 				return message;
 			} catch (Exception e) {
