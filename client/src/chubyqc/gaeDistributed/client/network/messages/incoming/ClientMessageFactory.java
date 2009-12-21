@@ -7,7 +7,9 @@ public class ClientMessageFactory extends MessageFactory {
 	@SuppressWarnings("unchecked")
 	public ClientMessageFactory() {
 		super(ExecuteCommand.class,
-				IsClientBooted.class
+				IsClientBooted.class,
+				Logon.class,
+				NotLogon.class
 		);
 	}
 }
