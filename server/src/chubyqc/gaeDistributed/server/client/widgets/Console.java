@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
 
 public class Console extends AbstractWidget {
 	
-	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd hh:mm:ss");
+	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
 	private static final int WAIT_TIME = 1000;
 	private static final String UI_POLLING = "Polling";
 	private static final String UI_NOTPOLLING = "Not polling";

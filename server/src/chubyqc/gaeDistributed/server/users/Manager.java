@@ -22,12 +22,19 @@ public class Manager {
 		_users = new HashMap<String, User>();
 	}
 	
-	public void login(Session session, String username, String password) throws Exception {
+	public User login(Session session, String username, String password) 
+		throws UserException, Exception {
 		User user = getUser(username);
 		if (!user.isRightPassword(password)) {
-			throw new Exception(ERR_LOGIN_BAD);
+			throw new UserException(ERR_LOGIN_BAD);
 		}
 		user.remember(session);
+		return user;
+	}
+	
+	public void clientLogin(Session session, String username, String password)
+		throws Exception {
+		login(session, username, password).logon();
 	}
 	
 	public User createUser(String name, String password, String email) throws Exception {

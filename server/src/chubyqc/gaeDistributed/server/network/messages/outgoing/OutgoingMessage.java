@@ -25,7 +25,8 @@ public abstract class OutgoingMessage extends Message {
 
 	public void populateJSON() {
 		for (Method method : getClass().getMethods()) {
-			if (method.getName().startsWith(PREFIX_GET) &&
+			if ((method.getName().startsWith(PREFIX_GET) ||
+					method.getName().startsWith(PREFIX_IS)) &&
 					method.getDeclaringClass() != Object.class) {
 				try {
 					setAttribute(method.getName(), method.invoke(this));
