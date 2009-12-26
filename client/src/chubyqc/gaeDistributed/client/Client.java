@@ -17,6 +17,8 @@ public class Client {
 		return _instance;
 	}
 	
+	private static final String ADDRESS_FORMAT = "http://%s/dafti/incoming";
+	
 	private String _username;
 	private String _password;
 	private ComManager _comManager;
@@ -24,7 +26,8 @@ public class Client {
 	private Client(String serverAddress, String username, String password) {
 		_username = username;
 		_password = password;
-		_comManager = new ComManager(new ClientMessageFactory(), serverAddress);
+		_comManager = new ComManager(new ClientMessageFactory(), 
+				String.format(ADDRESS_FORMAT, serverAddress));
 	}
 	
 	public void announce() {
