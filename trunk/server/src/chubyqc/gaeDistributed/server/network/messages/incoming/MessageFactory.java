@@ -1,9 +1,5 @@
 package chubyqc.gaeDistributed.server.network.messages.incoming;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,16 +32,6 @@ public abstract class MessageFactory {
 		} catch (JSONException e) {
 			return null;
 		}
-	}
-	
-	public IncomingMessage<?> create(InputStream jsonAsStream) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(jsonAsStream));
-		StringBuilder body = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			body.append(line);
-		}
-		return create(body.toString());
 	}
 	
 	private void addCreator(MessageCreator creator) {

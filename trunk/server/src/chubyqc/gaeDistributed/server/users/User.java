@@ -19,19 +19,22 @@ import chubyqc.gaeDistributed.server.client.widgets.console.Message;
 import chubyqc.gaeDistributed.server.network.ComManager;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.ExecuteCommand;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.IsClientBooted;
+import chubyqc.gaeDistributed.server.network.messages.outgoing.Logon;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.SendEmail;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class User {
+	
+	private static final String INFO_LOGON = "Logged On";
 
 	private static final String ERR_EMAIL = "Invalid email address: %s";
 	private static final String ERR_PASSWORD = "Invalid password";
 	private static final String ERR_USER_EXISTS = "User already exists";
 	
-	public static final String URL_INCOMING = "dafti/incoming";
-	public static final String URL_BASE = "http://localhost:8181/";
-	public static final String URL_FORMAT = "http://%s:8080";
+	private static final String URL_INCOMING = "dafti/incoming";
+	private static final String URL_BASE = "http://localhost:8181/";
+	private static final String URL_FORMAT = "http://%s:8080";
 	
 	@Persistent
     @PrimaryKey
@@ -44,9 +47,9 @@ public class User {
 	@NotPersistent
 	private String _address;
 	@NotPersistent
-	private Commands _commands;
+	private transient Commands _commands;
 	@NotPersistent
-	private Collection<Message> _messages;
+	private transient Collection<Message> _messages;
 	
 	User() {
 		_messages = new LinkedList<Message>();
@@ -61,11 +64,15 @@ public class User {
 	
 	public void remember(Session session) {
 		session.setUsername(_name);
+		inform(INFO_LOGON);
 	}
 	
 	public void setAddress(String address) {
-		_address = String.format(URL_FORMAT, address);
-		inform(_address);
+		inform(_address = parseAddress(address));
+	}
+	
+	public static String parseAddress(String address) {
+		return String.format(URL_FORMAT, address);
 	}
 	
 	public void setCommands(Commands commands) {
@@ -78,6 +85,10 @@ public class User {
 	
 	public void isBooted() {
 		send(new IsClientBooted());
+	}
+	
+	public void logon() {
+		send(new Logon(true));
 	}
 	
 	public void invoke(String commandName, Map<String, String> paramValues) {

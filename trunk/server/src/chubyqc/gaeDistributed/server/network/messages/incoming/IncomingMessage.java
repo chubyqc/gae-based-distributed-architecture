@@ -61,7 +61,8 @@ public abstract class IncomingMessage<T> extends Message {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args)
 							throws Throwable {
-						if (method.getName().startsWith(PREFIX_GET)) {
+						if (method.getName().startsWith(PREFIX_GET) ||
+								method.getName().startsWith(PREFIX_IS)) {
 							return getAttribute(method.getName());							
 						} else {
 							return method.invoke(proxy, args);
