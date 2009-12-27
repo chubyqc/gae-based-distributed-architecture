@@ -3,6 +3,8 @@ package chubyqc.gaeDistributed.client.network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import javax.net.ssl.SSLContext;
+
 import chubyqc.gaeDistributed.client.Client;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
@@ -10,6 +12,8 @@ import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
 
 public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager {
 	
@@ -30,7 +34,7 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 			@Override
 			public void run() {
 					try {
-						HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+						HttpServer server = createServer();
 						server.createContext("/", new HttpHandler() {
 							
 							@Override
@@ -38,7 +42,6 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 								String body = read(content.getRequestBody());
 								content.sendResponseHeaders(200, -1);
 								content.close();
-								System.err.println("received " + body);
 								receive(body, content.getRemoteAddress().getHostName(),
 										null);
 							}
@@ -46,12 +49,19 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 						server.start();
 						System.out.println("Client started");
 						Client.getInstance().login();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
+					} catch (Exception e) {
 						e.printStackTrace();
+						System.exit(1);
 					}
 			}
 			
 		}).start();
+	}
+	
+	private HttpServer createServer() throws Exception {
+		HttpsServer server = HttpsServer.create(new InetSocketAddress(443), 0);
+		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getInstance("TLS")));
+		
+		return server;
 	}
 }
