@@ -7,7 +7,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 
 
 public class Menu extends AbstractWidget {
@@ -20,7 +19,7 @@ public class Menu extends AbstractWidget {
 	private static final String UI_SEP = "|";
 
 	@Override
-	protected void init(Panel container) {
+	protected void init() {
 		HorizontalPanel panel = new HorizontalPanel();
 		
 		String target = new String();
@@ -40,7 +39,7 @@ public class Menu extends AbstractWidget {
 		panel.add(new Label(UI_SEP));
 		panel.add(isBooted);
 		
-		container.add(panel);
+		add(panel);
 
 		home.addClickHandler(new ClickHandler() {
 			@Override

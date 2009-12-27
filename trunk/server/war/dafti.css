@@ -1,7 +1,3 @@
-/** Add css rules here for your application. */
-
-
-/** Example rules used by the template application (remove for your app) */
 h1 {
   font-size: 2em;
   font-weight: bold;
@@ -10,25 +6,21 @@ h1 {
   text-align: center;
 }
 
-.sendButton {
-  display: block;
-  font-size: 16pt;
-}
-
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
+.contentContainer {
   width: 400px;
+  height: 300px;
 }
 
-.dialogVPanel {
-  margin: 5px;
+.consolePanel {
+  width: 400px;
+  height: 300px;
 }
 
-.serverResponseLabelError {
-  color: red;
+.consoleButton {
+  width: 200px;
 }
 
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-  margin: 15px 6px 6px;
+.commandsContainer {
+  width: 400px;
+  height: 260px;
 }

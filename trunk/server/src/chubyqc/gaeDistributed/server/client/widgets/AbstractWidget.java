@@ -4,33 +4,25 @@ import chubyqc.gaeDistributed.server.client.Dafti;
 import chubyqc.gaeDistributed.server.client.DaftiServiceAsync;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Panel;
 
-public abstract class AbstractWidget {
-
-	private AbsolutePanel _panel;
+public abstract class AbstractWidget extends AbsolutePanel {
 	
-	public AbstractWidget() {
-		_panel = new AbsolutePanel();
+	protected AbstractWidget() {
 		hide();
-		init(_panel);
-	}
-	
-	public void addTo(Panel container) {
-		container.add(_panel);
+		init();
 	}
 	
 	public void hide() {
-		_panel.setVisible(false);
+		setVisible(false);
 	}
 	
 	public void show() {
-		_panel.setVisible(true);
+		setVisible(true);
 	}
 	
 	protected DaftiServiceAsync getService() {
 		return Dafti.getInstance().getService();
 	}
 	
-	protected abstract void init(Panel container);
+	protected abstract void init();
 }
