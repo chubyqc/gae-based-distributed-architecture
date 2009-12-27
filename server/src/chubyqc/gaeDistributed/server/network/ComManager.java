@@ -31,7 +31,7 @@ public class ComManager {
 	private static final String SESSION_ID = "JSESSIONID";
 	
 	public MessageFactory _factory;
-	private List<String> _session;
+	private String _session;
 	
 	protected ComManager(MessageFactory factory) {
 		_factory = factory;
@@ -53,7 +53,6 @@ public class ComManager {
 	public void send(String address, OutgoingMessage message) {
 		try {
 			message.populateJSON();
-			System.err.println("sending " + message.toString());
 			URLConnection connection = new URL(address).openConnection();
 			setSession(connection);
 			connection.setDoOutput(true);
@@ -62,14 +61,9 @@ public class ComManager {
 			out.close();
 			connection.getInputStream().close();
 			rememberSession(connection);
-			System.err.println("sent");
 		} catch (Exception e) {
 			Logger.getInstance().error(e);
 		}
-	}
-
-	protected void rememberSession(URLConnection connection) {
-		_session = connection.getHeaderFields().get(SESSION_RESPONSE_KEY);
 	}
 	
 	public String read(InputStream jsonAsStream) throws IOException {
@@ -85,12 +79,25 @@ public class ComManager {
 	
 	private void setSession(URLConnection connection) {
 		if (_session != null) {
-			for (String key : _session) {
-				if (key.startsWith(SESSION_ID)) {
-					connection.setRequestProperty(SESSION_REQUEST_KEY, key);
-					break;
+			connection.setRequestProperty(SESSION_REQUEST_KEY, _session);
+		}
+	}
+
+	protected void rememberSession(URLConnection connection) {
+		if (_session == null) {
+			List<String> session = connection.getHeaderFields().get(SESSION_RESPONSE_KEY);
+			if (session != null) {
+				for (String key : session) {
+					if (key.startsWith(SESSION_ID)) {
+						_session = key;
+						break;
+					}
 				}
 			}
 		}
+	}
+	
+	public void invalidateSession() {
+		_session = null;
 	}
 }

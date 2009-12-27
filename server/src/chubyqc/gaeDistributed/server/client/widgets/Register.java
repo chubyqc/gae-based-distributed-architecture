@@ -7,7 +7,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -21,9 +20,16 @@ public class Register extends AbstractWidget {
     private TextBox _nameTextBox;
     private TextBox _emailTextBox;
     private TextBox _passwordTextBox;
+    
+    private Login _login;
+    
+    public Register(Login login) {
+    	super();
+    	_login = login;
+    }
 
 	@Override
-	protected void init(Panel container) {
+	protected void init() {
 		Grid formTable = new Grid(3, 2);
 	    _emailTextBox = new TextBox();
 	    _nameTextBox = new TextBox();
@@ -38,8 +44,8 @@ public class Register extends AbstractWidget {
 	    formTable.setWidget(1, 1, _passwordTextBox);
 	    formTable.setWidget(2, 1, _emailTextBox);
 
-	    container.add(formTable);
-	    container.add(createButton);
+	    add(formTable);
+	    add(createButton);
 	    
 	    _emailTextBox.setFocus(true);
 	    
@@ -53,6 +59,12 @@ public class Register extends AbstractWidget {
 
 	void register() {
 		getService().register(_nameTextBox.getText(), _passwordTextBox.getText(), 
-					_emailTextBox.getText(), new BaseCallback<Void>());
+					_emailTextBox.getText(), new BaseCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				super.onSuccess(result);
+				_login.login(_nameTextBox.getText(), _passwordTextBox.getText());
+			}
+		});
 	}
 }

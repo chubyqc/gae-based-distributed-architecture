@@ -10,9 +10,11 @@ import chubyqc.gaeDistributed.server.client.widgets.ShowCommands;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -24,10 +26,12 @@ public class Dafti implements EntryPoint {
 	}
 	
     private static final String UI_SUCCESS = "Call was successful.";
+    
+    private static final String STYLE_CONTENT = "contentContainer";
 
     private DaftiServiceAsync _service;
     private AbstractWidget _register;
-    private AbstractWidget _login;
+    private Login _login;
     private AbstractWidget _showCommands;
     private AbstractWidget _isBooted;
     
@@ -39,20 +43,24 @@ public class Dafti implements EntryPoint {
 		_instance = this;
 		_service = GWT.create(DaftiService.class);
 		Panel root = RootPanel.get();
-		Panel content = new AbsolutePanel();
-		
-        root.add(content);
+		Panel content = new VerticalPanel();
+		Panel contentScroll = new ScrollPanel(content);
+		contentScroll.addStyleName(STYLE_CONTENT);
 
         Menu menu = new Menu();
         menu.show();
-        menu.addTo(content);
+        root.add(menu);
         
-        (_currentContent = _register = new Register()).addTo(content);
-        (_login = new Login()).addTo(content);
-        (_showCommands = new ShowCommands()).addTo(content);
-        (_isBooted = new IsBooted()).addTo(content);
+        Grid layout = new Grid(1, 2);
+        root.add(layout);
+        layout.setWidget(0, 0, contentScroll);
+        layout.setWidget(0, 1, _console = new Console());
+        _console.show();
         
-        (_console = new Console()).addTo(root);
+        content.add(_login = new Login());
+        content.add(_currentContent = _register = new Register(_login));
+        content.add(_showCommands = new ShowCommands());
+        content.add(_isBooted = new IsBooted());
         
         showHome();
     }

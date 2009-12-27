@@ -31,10 +31,11 @@ public class User {
 	private static final String ERR_EMAIL = "Invalid email address: %s";
 	private static final String ERR_PASSWORD = "Invalid password";
 	private static final String ERR_USER_EXISTS = "User already exists";
+	private static final String ERR_NO_ADDRESS = "No address";
 	
 	private static final String URL_INCOMING = "dafti/incoming";
-	private static final String URL_BASE = "http://localhost:8181/";
-	private static final String URL_FORMAT = "http://%s:8080";
+	private static final String URL_BASE = "https://gae-dafti.appspot.com/";
+	private static final String URL_FORMAT = "https://%s";
 	
 	@Persistent
     @PrimaryKey
@@ -45,7 +46,7 @@ public class User {
 	private String _email;
 	
 	@NotPersistent
-	private String _address;
+	private transient String _address;
 	@NotPersistent
 	private transient Commands _commands;
 	@NotPersistent
@@ -83,15 +84,15 @@ public class User {
 		return _commands;
 	}
 	
-	public void isBooted() {
+	public void isBooted() throws Exception {
 		send(new IsClientBooted());
 	}
 	
-	public void logon() {
+	public void logon() throws Exception {
 		send(new Logon(true));
 	}
 	
-	public void invoke(String commandName, Map<String, String> paramValues) {
+	public void invoke(String commandName, Map<String, String> paramValues) throws Exception {
 		send(new ExecuteCommand(commandName, new JSONObject(paramValues)));
 	}
 	
@@ -128,7 +129,10 @@ public class User {
 				URL_BASE + URL_INCOMING, new SendEmail(_email));
 	}
 	
-	private void send(OutgoingMessage message) {
+	private void send(OutgoingMessage message) throws Exception {
+		if (_address == null || _address.length() == 0) {
+			throw new Exception(ERR_NO_ADDRESS);
+		}
 		ComManager.getInstance().send(_address, message);
 	}
 	

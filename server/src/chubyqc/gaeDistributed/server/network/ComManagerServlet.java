@@ -17,7 +17,6 @@ public class ComManagerServlet extends HttpServlet {
 	private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
 		try {
 			String content = getContent(req, resp);
-			System.err.println("receive " + content);
 			ComManager.getInstance().receive(content, req.getRemoteAddr(),
 					new Session(req.getSession()));
 		} catch (Exception e) {

@@ -6,7 +6,6 @@ import chubyqc.gaeDistributed.server.client.Dafti;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -18,12 +17,12 @@ public class Login extends AbstractWidget {
 	private PasswordTextBox _password;
 
 	@Override
-	protected void init(Panel container) {
-		container.add(_username = new TextBox());
-		container.add(_password = new PasswordTextBox());
+	protected void init() {
+		add(_username = new TextBox());
+		add(_password = new PasswordTextBox());
 		
 		Button login = new Button(UI_LOGIN_BUTTON);
-		container.add(login);
+		add(login);
 		
 		login.addClickHandler(new ClickHandler() {
 			@Override
@@ -34,7 +33,11 @@ public class Login extends AbstractWidget {
 	}
 
 	void login() {
-		getService().login(_username.getText(), _password.getText(), new BaseCallback<Void>() {
+		login(_username.getText(), _password.getText());
+	}
+	
+	void login(String username, String password) {
+		getService().login(username, password, new BaseCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				Dafti.getInstance().startConsole();
