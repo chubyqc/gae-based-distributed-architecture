@@ -11,23 +11,21 @@ public class Client {
 	public static Client getInstance() {
 		return _instance;
 	}
-	public static Client createInstance(String serverAddress, String username,
-			String password) {
-		_instance = new Client(serverAddress, username, password);
+	public static Client createInstance(String username, String password) {
+		_instance = new Client(username, password);
 		return _instance;
 	}
 	
-	private static final String ADDRESS_FORMAT = "http://%s/dafti/incoming";
+	private static final String ADDRESS = "https://gae-dafti.appspot.com/dafti/incoming";
 	
 	private String _username;
 	private String _password;
 	private ComManager _comManager;
 
-	private Client(String serverAddress, String username, String password) {
+	private Client(String username, String password) {
 		_username = username;
 		_password = password;
-		_comManager = new ComManager(new ClientMessageFactory(), 
-				String.format(ADDRESS_FORMAT, serverAddress));
+		_comManager = new ComManager(new ClientMessageFactory(), ADDRESS);
 	}
 	
 	public void announce() {
