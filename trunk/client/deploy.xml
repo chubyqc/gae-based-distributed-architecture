@@ -11,8 +11,6 @@
             </manifest>
             <fileset dir="/home/chubyqc/workspace/gae-based-distributed-architecture-client/bin"/>
             <fileset dir="/home/chubyqc/workspace/gae-based-distributed-architecture-server/war/WEB-INF/classes">
-            	<exclude name="**/chubyqc/gaeDistributed/server/client**"/>
-            	<exclude name="**/chubyqc/gaeDistributed/server/server**"/>
             	<exclude name="**/*.xml"/>
             </fileset>
         </jar>
