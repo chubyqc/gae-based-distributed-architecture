@@ -1,7 +1,11 @@
 package chubyqc.gaeDistributed.server.users;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+
+import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.CacheManager;
 
 import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.client.widgets.commands.Commands;
@@ -14,12 +18,24 @@ public class Manager {
 	}
 	
 	private static final String ERR_LOGIN_BAD = "Bad login.";
-	private static final String ERR_USER_NOT_FOUND = "User not found.";
+	private static final String ERR_USER_NOT_FOUND = "Bad login.";
+
+	private static final String CACHE = "cache";
+	private static final String PREFIX_USERS = "users";
+	private static final String PREFIX_UPDATED = "updated";
 	
-	private Map<String, User> _users;
+	private Cache _cache;
 	
 	private Manager() {
-		_users = new HashMap<String, User>();
+		try {
+			_cache = CacheManager.getInstance().getCache(CACHE);
+			if (_cache == null) {
+				_cache = CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+				CacheManager.getInstance().registerCache(CACHE, _cache);
+			}
+		} catch (CacheException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public User login(Session session, String username, String password) 
@@ -29,12 +45,16 @@ public class Manager {
 			throw new UserException(ERR_LOGIN_BAD);
 		}
 		user.remember(session);
+		commit(user);
 		return user;
 	}
 	
-	public void clientLogin(Session session, String username, String password)
+	public void clientLogin(Session session, String address, String username, String password)
 		throws Exception {
-		login(session, username, password).logon();
+		User user = login(session, username, password);
+		user.setAddress(address);
+		commit(user);
+		user.logon();
 	}
 	
 	public User createUser(String name, String password, String email) throws Exception {
@@ -46,15 +66,13 @@ public class Manager {
 	}
 	
 	public void setCommands(String username, Commands commands) throws UserException {
-		getUser(username).setCommands(commands);
+		User user = getUser(username);
+		user.setCommands(commands);
+		commit(user);
 	}
 	
 	public void isBooted(String username) throws Exception {
 		getUser(username).isBooted();
-	}
-	
-	public void setAddress(String username, String address) throws UserException {
-		getUser(username).setAddress(address);
 	}
 	
 	public Commands getCommands(String username) throws Exception {
@@ -67,24 +85,49 @@ public class Manager {
 	}
 
 	public void inform(String username, String message) throws UserException {
-		getUser(username).inform(message);
+		User user = getUser(username);
+		user.inform(message);
+		commit(user);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private boolean isUpdated(String key) {
+		Boolean updated = (Boolean)_cache.get(key);
+		updated = updated != null && updated;
+		if (updated) {
+			_cache.put(key, false);
+		}
+		return updated;
 	}
 	
 	public Message[] flushMessages(String username) throws Exception {
-		return getUser(username).flushMessages();
+		String key = PREFIX_UPDATED + username;
+		while (!isUpdated(key)) {
+			Thread.sleep(1000);
+		}
+		User user = getUser(username);
+		Message[] messages = user.flushMessages();
+		commit(user);
+		return messages;
 	}
 	
 	private User getUser(String username) throws UserException {
 		if (username == null) {
 			throw new UserException(ERR_USER_NOT_FOUND);
 		}
-		User user = _users.get(username);
+		User user = (User)_cache.get(PREFIX_USERS + username);
 		if (user == null) {
-			_users.put(username, user = GAEPersistenceManager.getInstance().getUser(username));
+			user = GAEPersistenceManager.getInstance().getUser(username);
+			commit(user);
 			if (user == null) {
 				throw new UserException(ERR_USER_NOT_FOUND);
 			}
 		}
 		return user;
+	}
+	
+	private void commit(User user) {
+		user.commit(_cache, PREFIX_USERS);
+		user.updated(_cache, PREFIX_UPDATED);
 	}
 }

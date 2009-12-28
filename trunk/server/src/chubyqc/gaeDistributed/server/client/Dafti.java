@@ -3,6 +3,7 @@ package chubyqc.gaeDistributed.server.client;
 import chubyqc.gaeDistributed.server.client.widgets.AbstractWidget;
 import chubyqc.gaeDistributed.server.client.widgets.Console;
 import chubyqc.gaeDistributed.server.client.widgets.IsBooted;
+import chubyqc.gaeDistributed.server.client.widgets.Loading;
 import chubyqc.gaeDistributed.server.client.widgets.Login;
 import chubyqc.gaeDistributed.server.client.widgets.Menu;
 import chubyqc.gaeDistributed.server.client.widgets.Register;
@@ -37,6 +38,7 @@ public class Dafti implements EntryPoint {
     
     private AbstractWidget _currentContent;
     private Console _console;
+    private AbstractWidget _loading;
 
 	public void onModuleLoad()
     {
@@ -61,6 +63,7 @@ public class Dafti implements EntryPoint {
         content.add(_currentContent = _register = new Register(_login));
         content.add(_showCommands = new ShowCommands());
         content.add(_isBooted = new IsBooted());
+        root.add(_loading = new Loading());
         
         showHome();
     }
@@ -95,5 +98,13 @@ public class Dafti implements EntryPoint {
 	
 	public void stopConsole() {
 		_console.stop();
+	}
+	
+	void startLoading() {
+		_loading.show();
+	}
+	
+	void stopLoading() {
+		_loading.hide();
 	}
 }

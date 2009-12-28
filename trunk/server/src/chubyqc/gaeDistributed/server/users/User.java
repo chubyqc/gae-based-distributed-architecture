@@ -1,9 +1,11 @@
 package chubyqc.gaeDistributed.server.users;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.cache.Cache;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
@@ -24,8 +26,10 @@ import chubyqc.gaeDistributed.server.network.messages.outgoing.OutgoingMessage;
 import chubyqc.gaeDistributed.server.network.messages.outgoing.SendEmail;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class User {
+public class User implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	private static final String INFO_LOGON = "Logged On";
 
 	private static final String ERR_EMAIL = "Invalid email address: %s";
@@ -36,6 +40,7 @@ public class User {
 	private static final String URL_INCOMING = "dafti/incoming";
 	private static final String URL_BASE = "https://gae-dafti.appspot.com/";
 	private static final String URL_FORMAT = "https://%s";
+//	private static final String URL_FORMAT = "http://%s:8080";
 	
 	@Persistent
     @PrimaryKey
@@ -46,14 +51,17 @@ public class User {
 	private String _email;
 	
 	@NotPersistent
-	private transient String _address;
+	private String _address;
 	@NotPersistent
-	private transient Commands _commands;
+	private Commands _commands;
 	@NotPersistent
-	private transient Collection<Message> _messages;
+	private Collection<Message> _messages;
+	@NotPersistent
+	private boolean _updated;
 	
 	User() {
 		_messages = new LinkedList<Message>();
+		_updated = false;
 	}
 	
 	User(String name, String password, String email) throws Exception {
@@ -104,13 +112,12 @@ public class User {
 	}
 	
 	private void setPassword(String password) throws Exception {
-		_password = password;
-		validatePassword();
+		validatePassword(password);
 		_password = Encoder.getInstance().encrypt(password);
 	}
 	
-	private void validatePassword() throws Exception {
-		if (_password == null || _password.length() < 5) {
+	private void validatePassword(String password) throws Exception {
+		if (password == null || password.length() < 5) {
 			throw new UserException(String.format(ERR_PASSWORD));
 		}
 	}
@@ -126,7 +133,7 @@ public class User {
 	
 	private void sendConfirmationEmail() {
 		ComManager.getInstance().send(
-				URL_BASE + URL_INCOMING, new SendEmail(_email));
+				URL_BASE + URL_INCOMING, new SendEmail(_name, _email));
 	}
 	
 	private void send(OutgoingMessage message) throws Exception {
@@ -141,28 +148,24 @@ public class User {
 	}
 
 	public void inform(String message) {
-		synchronized (_messages) {
-			_messages.add(new Message(message));
-			_messages.notify();
-		}
+		_messages.add(new Message(message));
+		_updated = true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	void updated(Cache cache, String prefix) {
+		cache.put(prefix + _name, _updated);
+	}
+	
+	@SuppressWarnings("unchecked")
+	void commit(Cache cache, String prefix) {
+		cache.put(prefix + _name, this);
 	}
 	
 	public Message[] flushMessages() {
-		synchronized (_messages) {
-			if (_messages.size() == 0) {
-				wait(_messages);
-			}
-			Message[] messages = _messages.toArray(new Message[_messages.size()]);
-			_messages.clear();
-			return messages;
-		} 
-	}
-	
-	private void wait(Object obj) {
-		try {
-			obj.wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Message[] messages = _messages.toArray(new Message[_messages.size()]);
+		_messages.clear();
+		_updated = false;
+		return messages;
 	}
 }

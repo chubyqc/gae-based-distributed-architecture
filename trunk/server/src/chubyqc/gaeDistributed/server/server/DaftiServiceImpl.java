@@ -2,6 +2,7 @@ package chubyqc.gaeDistributed.server.server;
 
 import java.util.Map;
 
+import chubyqc.gaeDistributed.server.Logger;
 import chubyqc.gaeDistributed.server.Session;
 import chubyqc.gaeDistributed.server.client.ClientException;
 import chubyqc.gaeDistributed.server.client.DaftiService;
@@ -10,6 +11,7 @@ import chubyqc.gaeDistributed.server.client.widgets.console.Message;
 import chubyqc.gaeDistributed.server.users.Manager;
 import chubyqc.gaeDistributed.server.users.User;
 
+import com.google.apphosting.api.DeadlineExceededException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -68,7 +70,10 @@ public class DaftiServiceImpl extends RemoteServiceServlet implements
 	public Message[] flushMessages() throws ClientException {
 		try {
 			return Manager.getInstance().flushMessages(getSession().getUsername());
+		} catch (DeadlineExceededException e) {
+			return new Message[0];
 		} catch (Exception e) {
+			Logger.getInstance().fatal(e);
 			throw new ClientException(e);
 		}
 	}
