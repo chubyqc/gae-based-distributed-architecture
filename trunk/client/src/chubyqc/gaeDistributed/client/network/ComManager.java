@@ -1,9 +1,13 @@
 package chubyqc.gaeDistributed.client.network;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.KeyStore;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import chubyqc.gaeDistributed.client.Client;
 import chubyqc.gaeDistributed.server.network.messages.incoming.MessageFactory;
@@ -17,11 +21,20 @@ import com.sun.net.httpserver.HttpsServer;
 
 public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager {
 	
-	private String _serverAddress;
+	private static final String KEYSTORE_ALGO = "JKS";
+	private static final String KEYSTORE_PATH = "cert/mySrvKeystore";
+	private static final String MANAGER_KEY = "SunX509";
+	private static final String SSL_ALGO = "TLS";
+	private static final String MSG_STARTED = "Client started";
 	
-	public ComManager(MessageFactory factory, String serverAddress) {
+	private String _serverAddress;
+	private String _passphrase;
+	
+	public ComManager(MessageFactory factory, String serverAddress,
+			String passphrase) {
 		super(factory);
 		_serverAddress = serverAddress;
+		_passphrase = passphrase;
 	}
 	
 	public void send(OutgoingMessage message) {
@@ -34,7 +47,7 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 			@Override
 			public void run() {
 					try {
-						HttpServer server = createServer();
+						HttpServer server = createServer(_passphrase);
 						server.createContext("/", new HttpHandler() {
 							
 							@Override
@@ -47,7 +60,7 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 							}
 						});
 						server.start();
-						System.out.println("Client started");
+						System.out.println(MSG_STARTED);
 						Client.getInstance().login();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -58,10 +71,24 @@ public class ComManager extends chubyqc.gaeDistributed.server.network.ComManager
 		}).start();
 	}
 	
-	private HttpServer createServer() throws Exception {
+	private HttpServer createServer(String passphraseStr) throws Exception {
+		char[] passphrase = passphraseStr.toCharArray();
+		KeyStore ks = KeyStore.getInstance(KEYSTORE_ALGO);
+		ks.load(new FileInputStream(KEYSTORE_PATH), passphrase);
+		
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance(MANAGER_KEY);
+		kmf.init(ks, passphrase);
+		
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(MANAGER_KEY);
+		   tmf.init(ks);
+		   
 		HttpsServer server = HttpsServer.create(new InetSocketAddress(443), 0);
-		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getInstance("TLS")));
+		SSLContext ssl = SSLContext.getInstance(SSL_ALGO);
+		ssl.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+		server.setHttpsConfigurator(new HttpsConfigurator(ssl));
 		
 		return server;
+		
+//		return HttpServer.create(new InetSocketAddress(8080), 0);
 	}
 }
