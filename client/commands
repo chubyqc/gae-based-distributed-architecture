@@ -7,8 +7,7 @@
     name: "Launch torrent",
     exec: "transmission-remote",
     parameters: {
-      "-a": "specify url",
-      asdffssssssssssssssssda: "just a test"
+      "-a": "specify url"
     }
   }]
 }

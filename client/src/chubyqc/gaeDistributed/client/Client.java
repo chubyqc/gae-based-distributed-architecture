@@ -11,8 +11,9 @@ public class Client {
 	public static Client getInstance() {
 		return _instance;
 	}
-	public static Client createInstance(String username, String password) {
-		_instance = new Client(username, password);
+	public static Client createInstance(String username, String password,
+			String passphrase) {
+		_instance = new Client(username, password, passphrase);
 		return _instance;
 	}
 	
@@ -22,10 +23,11 @@ public class Client {
 	private String _password;
 	private ComManager _comManager;
 
-	private Client(String username, String password) {
+	private Client(String username, String password, String passphrase) {
 		_username = username;
 		_password = password;
-		_comManager = new ComManager(new ClientMessageFactory(), ADDRESS);
+		_comManager = new ComManager(new ClientMessageFactory(), ADDRESS,
+				passphrase);
 	}
 	
 	public void announce() {
