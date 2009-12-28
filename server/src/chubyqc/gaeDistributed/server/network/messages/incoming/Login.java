@@ -13,8 +13,7 @@ public class Login extends IncomingMessage<ILogin> {
 		ILogin login = getDataStore();
 		Manager manager = Manager.getInstance();
 		try {
-			manager.setAddress(login.getUsername(), getAddress());
-			manager.clientLogin(getSession(), login.getUsername(), 
+			manager.clientLogin(getSession(), getAddress(), login.getUsername(), 
 					login.getPassword());
 		} catch (Exception e) {
 			ComManager.getInstance().send(User.parseAddress(getAddress()),

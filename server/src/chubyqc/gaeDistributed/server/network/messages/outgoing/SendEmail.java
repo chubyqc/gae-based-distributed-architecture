@@ -5,9 +5,16 @@ import chubyqc.gaeDistributed.server.network.messages.specs.ISendEmail;
 public class SendEmail extends OutgoingMessage implements ISendEmail {
 	
 	private String _email;
+	private String _username;
 	
-	public SendEmail(String email) {
+	public SendEmail(String username, String email) {
+		_username = username;
 		_email = email;
+	}
+	
+	@Override
+	public String getUsername() {
+		return _username;
 	}
 	
 	@Override

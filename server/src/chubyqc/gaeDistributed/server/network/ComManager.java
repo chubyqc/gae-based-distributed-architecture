@@ -54,6 +54,8 @@ public class ComManager {
 		try {
 			message.populateJSON();
 			URLConnection connection = new URL(address).openConnection();
+			connection.setConnectTimeout(30000);
+			connection.setReadTimeout(30000);
 			setSession(connection);
 			connection.setDoOutput(true);
 			OutputStream out = connection.getOutputStream();

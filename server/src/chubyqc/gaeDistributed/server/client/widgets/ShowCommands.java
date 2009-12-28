@@ -47,7 +47,7 @@ public class ShowCommands extends AbstractWidget implements ICommandsWriter {
 	void showCommands() {
 		getService().getCommands(new BaseCallback<Commands>() {
 			@Override
-			public void onSuccess(Commands result) {
+			public void doSuccess(Commands result) {
 				_commandsGrid.resizeRows(0);
 				result.printCommands(ShowCommands.this);
 				if (_commandsGrid.getRowCount() == 0) {

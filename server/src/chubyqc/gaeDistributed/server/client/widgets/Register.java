@@ -61,8 +61,7 @@ public class Register extends AbstractWidget {
 		getService().register(_nameTextBox.getText(), _passwordTextBox.getText(), 
 					_emailTextBox.getText(), new BaseCallback<Void>() {
 			@Override
-			public void onSuccess(Void result) {
-				super.onSuccess(result);
+			public void doSuccess(Void result) {
 				_login.login(_nameTextBox.getText(), _passwordTextBox.getText());
 			}
 		});

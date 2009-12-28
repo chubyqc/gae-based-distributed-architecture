@@ -2,13 +2,13 @@ package chubyqc.gaeDistributed.server.client.widgets;
 
 import java.util.Date;
 
-import chubyqc.gaeDistributed.server.client.BaseCallback;
 import chubyqc.gaeDistributed.server.client.widgets.console.Message;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -24,14 +24,14 @@ public class Console extends AbstractWidget {
 	private static final String STYLE_CONSOLE = "consolePanel";
 	private static final String STYLE_BTNS = "consoleButton";
 	
-	private static final String ERR_TIMEOUT = "This request (";
-	
 	private Grid _console;
 	private ToggleButton _toggler;
 	private boolean _isPolling;
 	private ScrollPanel _panel;
+	private int _timerCount;
 
 	protected void init() {
+		_timerCount = 0;
 		_isPolling = false;
 		_panel = new ScrollPanel();
 		_panel.addStyleName(STYLE_CONSOLE);
@@ -84,34 +84,34 @@ public class Console extends AbstractWidget {
 	public void start() {
 		show();
 		_toggler.setDown(_isPolling = true);
-		new Timer() {
-			@Override
-			public void run() {
-				getService().flushMessages(new BaseCallback<Message[]>() {
-					@Override
-					public void onSuccess(Message[] result) {
-						append(result);
-						if (_isPolling) {
-							schedule(WAIT_TIME);
+		if (++_timerCount == 1) {
+			new Timer() {
+				@Override
+				public void run() {
+					getService().flushMessages(new AsyncCallback<Message[]>() {
+						
+						@Override
+						public void onSuccess(Message[] result) {
+							append(result);
+							if (_isPolling) {
+								schedule(WAIT_TIME);
+							} else {
+								--_timerCount;
+							}
 						}
-					}
-					@Override
-					public void onFailure(Throwable caught) {
-						append(new Message(caught.getMessage()));
-						if (!isFatal(caught)) {
+						
+						@Override
+						public void onFailure(Throwable caught) {
 							stop();
+							--_timerCount;
 						}
-					}
-				});
-			}
-		}.schedule(WAIT_TIME);
+					});
+				}
+			}.schedule(WAIT_TIME);
+		}
 	}
 	
 	public void stop() {
 		_toggler.setDown(_isPolling = false);
-	}
-	
-	private boolean isFatal(Throwable caught) {
-		return !caught.getMessage().startsWith(ERR_TIMEOUT);
 	}
 }

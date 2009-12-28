@@ -39,7 +39,7 @@ public class Login extends AbstractWidget {
 	void login(String username, String password) {
 		getService().login(username, password, new BaseCallback<Void>() {
 			@Override
-			public void onSuccess(Void result) {
+			public void doSuccess(Void result) {
 				Dafti.getInstance().startConsole();
 				Dafti.getInstance().showCommands();
 			}
