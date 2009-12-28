@@ -118,10 +118,10 @@ public class Manager {
 		User user = (User)_cache.get(PREFIX_USERS + username);
 		if (user == null) {
 			user = GAEPersistenceManager.getInstance().getUser(username);
-			commit(user);
 			if (user == null) {
 				throw new UserException(ERR_USER_NOT_FOUND);
 			}
+			commit(user);
 		}
 		return user;
 	}

@@ -2,6 +2,7 @@ package chubyqc.gaeDistributed.server.client;
 
 import chubyqc.gaeDistributed.server.client.widgets.AbstractWidget;
 import chubyqc.gaeDistributed.server.client.widgets.Console;
+import chubyqc.gaeDistributed.server.client.widgets.Home;
 import chubyqc.gaeDistributed.server.client.widgets.IsBooted;
 import chubyqc.gaeDistributed.server.client.widgets.Loading;
 import chubyqc.gaeDistributed.server.client.widgets.Login;
@@ -31,6 +32,7 @@ public class Dafti implements EntryPoint {
     private static final String STYLE_CONTENT = "contentContainer";
 
     private DaftiServiceAsync _service;
+    private AbstractWidget _home;
     private AbstractWidget _register;
     private Login _login;
     private AbstractWidget _showCommands;
@@ -59,8 +61,9 @@ public class Dafti implements EntryPoint {
         layout.setWidget(0, 1, _console = new Console());
         _console.show();
         
+        content.add(_currentContent = _home = new Home());
         content.add(_login = new Login());
-        content.add(_currentContent = _register = new Register(_login));
+        content.add(_register = new Register(_login));
         content.add(_showCommands = new ShowCommands());
         content.add(_isBooted = new IsBooted());
         root.add(_loading = new Loading());
@@ -68,7 +71,7 @@ public class Dafti implements EntryPoint {
         showHome();
     }
 
-	public void showHome() { _currentContent.hide(); }
+	public void showHome() { setState(_home); }
 	public void showRegister() { setState(_register); }
 	public void showLogin() { setState(_login); }
 	public void showCommands() { setState(_showCommands); }
